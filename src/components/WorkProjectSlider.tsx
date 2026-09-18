@@ -4,6 +4,7 @@ import { ArrowUpRight, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import { CASE_STUDIES } from '../data/agencyData';
 import { CaseStudy } from '../types';
 import CaseStudyModal from './CaseStudyModal';
+import CaseStudyVisual from './CaseStudyVisual';
 
 export default memo(function WorkProjectSlider() {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<CaseStudy | null>(null);
@@ -75,28 +76,17 @@ export default memo(function WorkProjectSlider() {
             onClick={() => setSelectedCaseStudy(study)}
             className="group flex-shrink-0 w-[320px] sm:w-[380px] md:w-[440px] snap-center cursor-pointer rounded-2xl glass-card border border-[#4a4a4a]/50 hover:border-[#6d8196] transition-all duration-500 overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.6)] flex flex-col justify-between"
           >
-            {/* Visual Header Image with 3D depth and subtle zoom */}
+            {/* Visual Header CSS Design with subtle dark gradient, slate-blue radial glow, and grid overlay */}
             <div className="relative h-64 md:h-72 w-full overflow-hidden bg-[#181a1d]">
-              <img
-                src={study.image}
-                alt={study.altText}
-                width={600}
-                height={380}
-                decoding="async"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                loading="lazy"
+              <CaseStudyVisual
+                title={study.title}
+                eyebrow={`CASE STUDY 0${index + 1}`}
+                tag={study.tag}
+                category={study.category}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-80" />
-
-              {/* Tag Pill */}
-              <div className="absolute top-4 left-4">
-                <span className="px-3 py-1 rounded-full bg-[#0a0a0a]/80 backdrop-blur-md border border-[#6d8196]/40 text-[#FFFFE3] font-tech text-xs uppercase tracking-wider">
-                  {study.tag}
-                </span>
-              </div>
 
               {/* Hover inspect overlay icon */}
-              <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#6d8196]/30 backdrop-blur-md border border-[#6d8196]/60 flex items-center justify-center text-[#FFFFE3] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-[#6d8196]/30 backdrop-blur-md border border-[#6d8196]/60 flex items-center justify-center text-[#FFFFE3] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <Eye className="w-4 h-4" />
               </div>
             </div>

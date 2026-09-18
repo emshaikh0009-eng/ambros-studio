@@ -1,7 +1,7 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { motion } from 'motion/react';
 import { MessageCircle, Instagram, Facebook, Twitter, ShieldCheck, Users } from 'lucide-react';
-import { BRAND, FOUNDER_IMAGE, PARTNERS, TEAM_SPECIALISTS } from '../data/agencyData';
+import { BRAND, PARTNERS, TEAM_SPECIALISTS } from '../data/agencyData';
 import TestimonialsSlider from '../components/TestimonialsSlider';
 import { PageId } from '../types';
 
@@ -10,6 +10,7 @@ interface AboutPageProps {
 }
 
 export default memo(function AboutPage({ onNavigate }: AboutPageProps) {
+  const [imageError, setImageError] = useState(false);
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#cbcbcb] pt-32 pb-24 overflow-hidden">
       {/* Background ambient lighting */}
@@ -46,37 +47,87 @@ export default memo(function AboutPage({ onNavigate }: AboutPageProps) {
             <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-[#6d8196]/40 via-[#4a4a4a]/20 to-[#FFFFE3]/20 blur-lg opacity-70 group-hover:opacity-100 transition-opacity duration-700" />
 
             <div className="relative rounded-2xl overflow-hidden border border-[#6d8196]/40 bg-[#181a1d] shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
-              {/* Photo — WebP, 800w, <200KB, lazy loading & async decoding */}
-              <img
-                src={FOUNDER_IMAGE}
-                alt="Anas Shaikh — Founder & CEO of AmbrosStudio"
-                width={800}
-                height={1071}
-                loading="lazy"
-                decoding="async"
-                className="w-full h-[520px] object-cover object-center grayscale contrast-105 group-hover:grayscale-0 transition-all duration-700"
-              />
+              {!imageError ? (
+                <>
+                  <img
+                    src="/founder.jpg"
+                    alt="Anas Shaikh — Founder & CEO of AmbrosStudio"
+                    width={800}
+                    height={1071}
+                    loading="lazy"
+                    decoding="async"
+                    onError={() => setImageError(true)}
+                    className="w-full h-[520px] object-cover object-center grayscale contrast-105 group-hover:grayscale-0 transition-all duration-700"
+                  />
 
-              {/* Soft grain overlay */}
-              <div className="absolute inset-0 bg-grain pointer-events-none opacity-40" />
+                  {/* Soft grain overlay */}
+                  <div className="absolute inset-0 bg-grain pointer-events-none opacity-40" />
 
-              {/* Gradient Vignette at bottom */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/20 to-transparent opacity-90" />
+                  {/* Gradient Vignette at bottom */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/20 to-transparent opacity-90 pointer-events-none" />
 
-              {/* Founder Title Badge */}
-              <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
-                <div>
-                  <h3 className="font-tech text-xl font-bold text-[#FFFFE3]">
-                    {BRAND.founder}
-                  </h3>
-                  <p className="font-serif-luxury text-sm text-[#6d8196] italic">
-                    {BRAND.founderRole}
-                  </p>
+                  {/* Founder Title Badge */}
+                  <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between z-10 pointer-events-none">
+                    <div>
+                      <h3 className="font-tech text-xl font-bold text-[#FFFFE3]">
+                        {BRAND.founder}
+                      </h3>
+                      <p className="font-serif-luxury text-sm text-[#6d8196] italic">
+                        {BRAND.founderRole}
+                      </p>
+                    </div>
+                    <div className="font-tech text-[10px] uppercase tracking-widest text-[#cbcbcb]/70 px-3 py-1 rounded-full bg-[#0a0a0a]/80 border border-[#4a4a4a]">
+                      EXECUTIVE LEAD
+                    </div>
+                  </div>
+                </>
+              ) : (
+                /* Fallback when /founder.jpg is not found: slate-blue to dark gradient placeholder */
+                <div
+                  className="w-full h-[520px] flex flex-col items-center justify-center p-8 text-center relative overflow-hidden select-none"
+                  style={{
+                    background: 'linear-gradient(135deg, #1f2b38 0%, #11171f 50%, #0a0a0a 100%)',
+                  }}
+                >
+                  {/* Faint slate-blue radial glow in corner */}
+                  <div
+                    className="absolute inset-0 pointer-events-none transition-transform duration-700 ease-out group-hover:scale-105"
+                    style={{
+                      background: 'radial-gradient(circle at 35% 25%, rgba(109, 129, 150, 0.45), transparent 70%)',
+                    }}
+                  />
+
+                  {/* Repeating grid overlay (5% opacity) */}
+                  <div
+                    className="absolute inset-0 pointer-events-none opacity-50"
+                    style={{
+                      backgroundImage: `
+                        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 1px, transparent 1px, transparent 24px),
+                        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 1px, transparent 1px, transparent 24px)
+                      `,
+                    }}
+                  />
+
+                  {/* Monogram emblem */}
+                  <div className="relative z-10 w-20 h-20 rounded-full bg-[#181a1d]/90 border border-[#6d8196]/60 flex items-center justify-center font-tech text-2xl font-black text-[#FFFFE3] mb-6 shadow-[0_0_30px_rgba(109,129,150,0.35)] group-hover:shadow-[0_0_40px_rgba(109,129,150,0.5)] transition-shadow duration-500">
+                    AS
+                  </div>
+
+                  {/* "Anas Shaikh — Founder & CEO" in serif type */}
+                  <div className="relative z-10 space-y-2">
+                    <h3 className="font-serif-luxury text-3xl sm:text-4xl text-[#FFFFE3] drop-shadow-[0_0_20px_rgba(255,255,227,0.4)]">
+                      Anas Shaikh
+                    </h3>
+                    <p className="font-serif-luxury italic text-lg sm:text-xl text-[#6d8196]">
+                      Founder &amp; CEO
+                    </p>
+                  </div>
+
+                  <div className="relative z-10 mt-8 px-4 py-1.5 rounded-full bg-[#0a0a0a]/80 border border-[#4a4a4a] text-[#cbcbcb]/70 font-tech text-[11px] uppercase tracking-widest">
+                    AmbrosStudio · Executive Leadership
+                  </div>
                 </div>
-                <div className="font-tech text-[10px] uppercase tracking-widest text-[#cbcbcb]/70 px-3 py-1 rounded-full bg-[#0a0a0a]/80 border border-[#4a4a4a]">
-                  EXECUTIVE LEAD
-                </div>
-              </div>
+              )}
             </div>
           </motion.div>
 

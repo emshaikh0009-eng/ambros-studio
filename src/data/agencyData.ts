@@ -22,8 +22,8 @@ export const BRAND = {
     "I started Ambros because I kept meeting brilliant business owners who were invisible online. Not because they lacked ambition — but because no one had built them the right digital foundation. I built a team of five specialists who do exactly that: design, develop, advertise, and grow. Every project we take on is crafted with purpose — because your business deserves nothing less.",
 };
 
-// Official Founder Portrait — Anas Shaikh, Founder & CEO of AmbrosStudio (Optimized WebP, 800w, <200KB)
-export const FOUNDER_IMAGE = '/src/assets/images/anas_shaikh_founder.webp';
+// Official Founder Portrait — Anas Shaikh, Founder & CEO of AmbrosStudio
+export const FOUNDER_IMAGE = '/founder.jpg';
 
 // TODO: Partner logos — text-based for now, swap with SVG / PNG image assets later
 export const PARTNERS: Partner[] = [

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, ArrowUpRight, CheckCircle2, TrendingUp, Sparkles, MessageCircle } from 'lucide-react';
 import { CaseStudy } from '../types';
 import { BRAND } from '../data/agencyData';
+import CaseStudyVisual from './CaseStudyVisual';
 
 interface CaseStudyModalProps {
   caseStudy: CaseStudy | null;
@@ -53,28 +54,15 @@ export default memo(function CaseStudyModal({ caseStudy, onClose }: CaseStudyMod
 
           {/* Body Content */}
           <div className="p-6 md:p-10 overflow-y-auto space-y-10">
-            {/* Visual Header Image */}
-            <div className="relative w-full h-64 md:h-96 rounded-xl overflow-hidden border border-[#4a4a4a]/60">
-              <img
-                src={caseStudy.image}
-                alt={caseStudy.altText}
-                width={800}
-                height={500}
-                decoding="async"
-                className="w-full h-full object-cover"
-                loading="lazy"
+            {/* Visual Header CSS Design with subtle dark gradient, slate-blue radial glow, and grid overlay */}
+            <div className="relative w-full h-64 md:h-96 rounded-xl overflow-hidden border border-[#4a4a4a]/60 group">
+              <CaseStudyVisual
+                title={caseStudy.title}
+                eyebrow={caseStudy.tag}
+                category={caseStudy.category}
+                deliverables={caseStudy.deliverables}
+                size="modal"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0e1014] via-transparent to-transparent opacity-80" />
-              <div className="absolute bottom-6 left-6 right-6 flex flex-wrap gap-2">
-                {caseStudy.deliverables.map((item, idx) => (
-                  <span
-                    key={idx}
-                    className="px-3 py-1 rounded-full bg-[#0a0a0a]/80 backdrop-blur-md border border-[#6d8196]/40 text-[#FFFFE3] font-tech text-xs"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
             </div>
 
             {/* Performance Stats Bento */}

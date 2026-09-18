@@ -4,6 +4,7 @@ import { ArrowUpRight, Eye, TrendingUp, Sparkles, Filter } from 'lucide-react';
 import { CASE_STUDIES } from '../data/agencyData';
 import { CaseStudy, PageId } from '../types';
 import CaseStudyModal from '../components/CaseStudyModal';
+import CaseStudyVisual from '../components/CaseStudyVisual';
 import MagneticButton from '../components/MagneticButton';
 import { BRAND } from '../data/agencyData';
 
@@ -108,36 +109,17 @@ export default memo(function WorkPage({ onNavigate }: WorkPageProps) {
               onClick={() => setSelectedCaseStudy(study)}
               className="group glass-card rounded-2xl border border-[#4a4a4a]/50 hover:border-[#6d8196] overflow-hidden cursor-pointer flex flex-col justify-between transition-all duration-500 shadow-[0_15px_45px_rgba(0,0,0,0.7)]"
             >
-              {/* Image Preview with Hover Lift & Tag */}
+              {/* Pure CSS Visual with dark gradient, slate-blue radial glow, and grid overlay */}
               <div className="relative h-72 sm:h-80 w-full overflow-hidden bg-[#181a1d]">
-                <img
-                  src={study.image}
-                  alt={study.altText}
-                  width={800}
-                  height={500}
-                  decoding="async"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  loading="lazy"
+                <CaseStudyVisual
+                  title={study.title}
+                  eyebrow={`CASE STUDY 0${index + 1}`}
+                  tag={study.tag}
+                  category={study.category}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-85" />
 
-                <div className="absolute top-5 left-5">
-                  <span className="px-3.5 py-1.5 rounded-full bg-[#0a0a0a]/80 backdrop-blur-md border border-[#6d8196]/40 text-[#FFFFE3] font-tech text-xs uppercase tracking-wider">
-                    {study.tag}
-                  </span>
-                </div>
-
-                <div className="absolute top-5 right-5 w-10 h-10 rounded-full bg-[#6d8196]/30 backdrop-blur-md border border-[#6d8196]/60 flex items-center justify-center text-[#FFFFE3] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute top-5 right-5 z-20 w-10 h-10 rounded-full bg-[#6d8196]/30 backdrop-blur-md border border-[#6d8196]/60 flex items-center justify-center text-[#FFFFE3] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <Eye className="w-4 h-4" />
-                </div>
-
-                <div className="absolute bottom-5 left-5 right-5">
-                  <span className="font-tech text-xs uppercase tracking-widest text-[#6d8196] block mb-1">
-                    {study.category}
-                  </span>
-                  <h3 className="font-serif-luxury text-3xl md:text-4xl text-[#FFFFE3]">
-                    {study.title}
-                  </h3>
                 </div>
               </div>
 
