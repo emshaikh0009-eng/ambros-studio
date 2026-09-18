@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 import { TESTIMONIALS } from '../data/agencyData';
@@ -8,7 +8,7 @@ interface TestimonialsSliderProps {
   subtitle?: string;
 }
 
-export default function TestimonialsSlider({
+export default memo(function TestimonialsSlider({
   title = 'Real Founders. Real Scale.',
   subtitle = 'What happens when purpose meets digital precision.',
 }: TestimonialsSliderProps) {
@@ -90,31 +90,26 @@ export default function TestimonialsSlider({
           <motion.div
             key={current.id}
             initial={{
-              scale: 0.94,
+              scale: 0.96,
               opacity: 0,
-              y: 16,
-              filter: 'blur(10px)',
+              y: 14,
             }}
             animate={{
               scale: 1,
               opacity: 1,
               y: 0,
-              filter: 'blur(0px)',
               transition: {
-                type: 'spring',
-                damping: 18,
-                stiffness: 140,
-                mass: 0.8,
+                duration: 0.35,
+                ease: [0.16, 1, 0.3, 1],
               },
             }}
             exit={{
-              scale: 0.96,
+              scale: 0.98,
               opacity: 0,
-              y: -12,
-              filter: 'blur(6px)',
-              transition: { duration: 0.3 },
+              y: -10,
+              transition: { duration: 0.25, ease: 'easeIn' },
             }}
-            className="w-full glass-card rounded-2xl p-8 md:p-14 border border-[#4a4a4a]/50 hover:border-[#6d8196]/60 shadow-[0_20px_50px_rgba(0,0,0,0.6)] relative overflow-hidden"
+            className="w-full glass-card rounded-2xl p-8 md:p-14 border border-[#4a4a4a]/50 hover:border-[#6d8196]/60 shadow-[0_20px_50px_rgba(0,0,0,0.6)] relative overflow-hidden will-change-transform"
           >
             {/* Top Row: Stars + Metric Badge */}
             <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -133,13 +128,13 @@ export default function TestimonialsSlider({
               </div>
             </div>
 
-            {/* Quote in italic serif with blur-to-focus text typing visual */}
+            {/* Quote in italic serif (Pure transform and opacity transition) */}
             <div className="relative mb-10">
               <Quote className="absolute -top-5 -left-4 w-10 h-10 text-[#6d8196]/20 pointer-events-none" />
               <motion.p
-                initial={{ opacity: 0, filter: 'blur(8px)' }}
-                animate={{ opacity: 1, filter: 'blur(0px)' }}
-                transition={{ duration: 0.6, delay: 0.15 }}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.08 }}
                 className="font-serif-luxury italic text-2xl md:text-3xl lg:text-4xl text-[#FFFFE3] leading-relaxed relative z-10"
               >
                 &ldquo;{current.quote}&rdquo;
@@ -189,4 +184,4 @@ export default function TestimonialsSlider({
       </div>
     </section>
   );
-}
+});

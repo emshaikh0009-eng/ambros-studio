@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, CheckCircle2, MessageCircle, Layers, TrendingUp, CreditCard, Sparkles, ShieldAlert } from 'lucide-react';
 import { SERVICES, BRAND } from '../data/agencyData';
@@ -9,7 +10,7 @@ interface ServicesPageProps {
   onNavigate: (page: PageId) => void;
 }
 
-export default function ServicesPage({ onNavigate }: ServicesPageProps) {
+export default memo(function ServicesPage({ onNavigate }: ServicesPageProps) {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#cbcbcb] pt-32 pb-24 overflow-hidden">
       {/* Background ambient lighting */}
@@ -161,4 +162,4 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
       </section>
     </div>
   );
-}
+});

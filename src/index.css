@@ -89,3 +89,10 @@
   text-shadow: 0 0 20px rgba(109, 129, 150, 0.4);
 }
 
+/* Performance: Content visibility for off-screen rendering */
+.section-content-visibility {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 800px;
+}
+
+

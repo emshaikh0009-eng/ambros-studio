@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, Eye, TrendingUp, Sparkles, Filter } from 'lucide-react';
 import { CASE_STUDIES } from '../data/agencyData';
@@ -11,7 +11,7 @@ interface WorkPageProps {
   onNavigate: (page: PageId) => void;
 }
 
-export default function WorkPage({ onNavigate }: WorkPageProps) {
+export default memo(function WorkPage({ onNavigate }: WorkPageProps) {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<CaseStudy | null>(null);
   const [activeFilter, setActiveFilter] = useState<'all' | 'web' | 'ads' | 'cards'>('all');
 
@@ -113,6 +113,9 @@ export default function WorkPage({ onNavigate }: WorkPageProps) {
                 <img
                   src={study.image}
                   alt={study.altText}
+                  width={800}
+                  height={500}
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   loading="lazy"
                 />
@@ -212,4 +215,4 @@ export default function WorkPage({ onNavigate }: WorkPageProps) {
       </section>
     </div>
   );
-}
+});

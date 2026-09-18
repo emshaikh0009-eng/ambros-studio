@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageCircle, ArrowUpRight, Mail, Phone, MapPin, Instagram, Facebook, Twitter, CheckCircle2, Send, HelpCircle, ChevronDown } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -10,7 +10,7 @@ interface ContactPageProps {
   onNavigate: (page: PageId) => void;
 }
 
-export default function ContactPage({ onNavigate }: ContactPageProps) {
+export default memo(function ContactPage({ onNavigate }: ContactPageProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -424,14 +424,14 @@ export default function ContactPage({ onNavigate }: ContactPageProps) {
                   />
                 </button>
 
-                <AnimatePresence>
+                <AnimatePresence initial={false}>
                   {isOpen && (
                     <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="px-6 pb-6 text-xs sm:text-sm font-sans text-[#cbcbcb]/80 leading-relaxed border-t border-[#4a4a4a]/30 pt-4"
+                      initial={{ opacity: 0, y: -6, scaleY: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scaleY: 1 }}
+                      exit={{ opacity: 0, y: -4, scaleY: 0.96 }}
+                      transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                      className="px-6 pb-6 text-xs sm:text-sm font-sans text-[#cbcbcb]/80 leading-relaxed border-t border-[#4a4a4a]/30 pt-4 origin-top will-change-transform"
                     >
                       {faq.answer}
                     </motion.div>
@@ -444,4 +444,4 @@ export default function ContactPage({ onNavigate }: ContactPageProps) {
       </section>
     </div>
   );
-}
+});

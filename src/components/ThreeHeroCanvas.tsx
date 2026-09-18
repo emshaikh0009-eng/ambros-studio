@@ -1,301 +1,383 @@
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import { useEffect, useRef, useState, memo } from 'react';
+import type * as THREE from 'three';
+import AmbrosLogo from './AmbrosLogo';
 
 interface ThreeHeroCanvasProps {
   scrollY?: number;
+  canStart?: boolean;
 }
 
-export default function ThreeHeroCanvas({ scrollY = 0 }: ThreeHeroCanvasProps) {
+export default memo(function ThreeHeroCanvas({
+  scrollY = 0,
+  canStart = true,
+}: ThreeHeroCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef(scrollY);
   scrollRef.current = scrollY;
 
+  // Check for mobile (screen width < 768px)
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    // 1. If on mobile, 3D is completely disabled
+    if (isMobile) return;
+
+    // 2. Wait until idle / canStart
+    if (!canStart) return;
+
     const container = containerRef.current;
     if (!container) return;
 
-    // Dimensions
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+    let isDisposed = false;
+    let animationFrameId: number | null = null;
+    let observer: IntersectionObserver | null = null;
+    let isVisible = true;
 
-    // Scene
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x0a0a0a, 0.045);
+    // Cleaners bag
+    let cleanupFn: (() => void) | null = null;
 
-    // Camera
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0, 14);
+    // Dynamically import Three.js only on desktop when idle & ready
+    const initThreeScene = async () => {
+      try {
+        const THREE = await import('three');
+        if (isDisposed || !container) return;
 
-    // Renderer (cap DPR at 1.5 for performance)
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      powerPreference: 'high-performance',
-    });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    renderer.setSize(width, height);
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.25;
-    container.appendChild(renderer.domElement);
+        // Dimensions
+        const width = container.clientWidth || window.innerWidth;
+        const height = container.clientHeight || window.innerHeight;
 
-    // Group for objects
-    const objectsGroup = new THREE.Group();
-    scene.add(objectsGroup);
+        // Scene & Fog (no post-processing or bloom)
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x0a0a0a, 0.045);
 
-    // Brand Colors
-    const slateColor = new THREE.Color(0x6d8196);
-    const creamColor = new THREE.Color(0xffffe3);
-    const darkBase = new THREE.Color(0x181a1d);
+        // Camera
+        const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+        camera.position.set(0, 0, 14);
 
-    // Lighting setup for luxury chrome & glass aesthetic
-    const ambientLight = new THREE.AmbientLight(0x0f1318, 1.8);
-    scene.add(ambientLight);
+        // Renderer (capped DPR at 1.5 max)
+        const renderer = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true,
+          powerPreference: 'high-performance',
+        });
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        renderer.setPixelRatio(dpr);
+        renderer.setSize(width, height);
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
 
-    // Key Slate Blue Rim Light
-    const slateRimLight = new THREE.PointLight(slateColor, 8.5, 30);
-    slateRimLight.position.set(-6, 5, 4);
-    scene.add(slateRimLight);
+        container.appendChild(renderer.domElement);
 
-    // Fill Cream Accent Light
-    const creamAccentLight = new THREE.PointLight(creamColor, 6.0, 30);
-    creamAccentLight.position.set(7, -4, 5);
-    scene.add(creamAccentLight);
+        // Group for objects
+        const objectsGroup = new THREE.Group();
+        scene.add(objectsGroup);
 
-    // Back rim light
-    const backRimLight = new THREE.DirectionalLight(0x6d8196, 2.5);
-    backRimLight.position.set(0, 10, -8);
-    scene.add(backRimLight);
+        // Brand Colors
+        const slateColor = new THREE.Color(0x6d8196);
+        const creamColor = new THREE.Color(0xffffe3);
 
-    // Materials: luxury metallic chrome & frosted glass finish
-    const chromeMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x1a1d22,
-      emissive: 0x06090e,
-      roughness: 0.12,
-      metalness: 0.95,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.1,
-      reflectivity: 0.95,
-    });
+        // Optimized Lights (no heavy shadow computation)
+        const ambientLight = new THREE.AmbientLight(0x0f1318, 2.0);
+        scene.add(ambientLight);
 
-    const slateGlassMaterial = new THREE.MeshPhysicalMaterial({
-      color: slateColor,
-      roughness: 0.25,
-      metalness: 0.4,
-      transmission: 0.6,
-      opacity: 0.85,
-      transparent: true,
-      ior: 1.5,
-    });
+        const slateRimLight = new THREE.PointLight(slateColor, 7.0, 28);
+        slateRimLight.position.set(-6, 5, 4);
+        scene.add(slateRimLight);
 
-    const creamShimmerMaterial = new THREE.MeshStandardMaterial({
-      color: 0x1f2228,
-      roughness: 0.35,
-      metalness: 0.85,
-    });
+        const creamAccentLight = new THREE.PointLight(creamColor, 5.0, 28);
+        creamAccentLight.position.set(7, -4, 5);
+        scene.add(creamAccentLight);
 
-    // Geometries
-    const torusKnotGeo = new THREE.TorusKnotGeometry(1.6, 0.42, 120, 24, 2, 3);
-    const icosahedronGeo = new THREE.IcosahedronGeometry(1.1, 0);
-    const sphereGeo = new THREE.SphereGeometry(0.85, 36, 36);
-    const smallShardGeo = new THREE.TetrahedronGeometry(0.7, 0);
-    const ringGeo = new THREE.TorusGeometry(2.4, 0.08, 16, 80);
+        // Lightweight Standard Materials (GPU friendly, zero transmission multi-pass overhead)
+        const chromeMaterial = new THREE.MeshStandardMaterial({
+          color: 0x1c2026,
+          roughness: 0.18,
+          metalness: 0.92,
+        });
 
-    // Main central hero sculpture: Chrome Torus Knot
-    const mainTorus = new THREE.Mesh(torusKnotGeo, chromeMaterial);
-    mainTorus.position.set(2.5, 0.4, 0);
-    objectsGroup.add(mainTorus);
+        const slateMaterial = new THREE.MeshStandardMaterial({
+          color: slateColor,
+          roughness: 0.3,
+          metalness: 0.6,
+          transparent: true,
+          opacity: 0.85,
+        });
 
-    // Floating Ring orbiting central sculpture
-    const luxuryRing = new THREE.Mesh(ringGeo, slateGlassMaterial);
-    luxuryRing.position.set(2.5, 0.4, -0.5);
-    luxuryRing.rotation.x = Math.PI / 3;
-    objectsGroup.add(luxuryRing);
+        const creamMaterial = new THREE.MeshStandardMaterial({
+          color: 0x22262d,
+          roughness: 0.35,
+          metalness: 0.8,
+        });
 
-    // Secondary items around
-    interface FloatingItem {
-      mesh: THREE.Mesh;
-      initialPos: THREE.Vector3;
-      rotSpeed: { x: number; y: number; z: number };
-      orbitSpeed: number;
-      orbitRadius: number;
-      orbitAngle: number;
-      floatSpeed: number;
-      floatPhase: number;
-    }
+        // 50% Reduced Polygon Geometries (low-poly specification)
+        // Torus knot: 60 x 12 (halved from 120 x 24)
+        const torusKnotGeo = new THREE.TorusKnotGeometry(1.6, 0.42, 60, 12, 2, 3);
+        // Ring: 8 x 40 (halved from 16 x 80)
+        const ringGeo = new THREE.TorusGeometry(2.4, 0.08, 8, 40);
+        // Sphere: 18 x 18 (halved from 36 x 36)
+        const sphereGeo = new THREE.SphereGeometry(0.85, 18, 18);
+        const icosahedronGeo = new THREE.IcosahedronGeometry(1.1, 0);
+        const smallShardGeo = new THREE.TetrahedronGeometry(0.7, 0);
 
-    const floatingItems: FloatingItem[] = [];
+        // Main central hero sculpture: Chrome Torus Knot
+        const mainTorus = new THREE.Mesh(torusKnotGeo, chromeMaterial);
+        mainTorus.position.set(2.5, 0.4, 0);
+        objectsGroup.add(mainTorus);
 
-    // Glass Sphere
-    const glassSphere = new THREE.Mesh(sphereGeo, slateGlassMaterial);
-    glassSphere.position.set(-3.2, 1.8, 1.2);
-    objectsGroup.add(glassSphere);
-    floatingItems.push({
-      mesh: glassSphere,
-      initialPos: glassSphere.position.clone(),
-      rotSpeed: { x: 0.008, y: 0.012, z: 0.005 },
-      orbitSpeed: 0.004,
-      orbitRadius: 4.2,
-      orbitAngle: Math.PI * 0.4,
-      floatSpeed: 0.0018,
-      floatPhase: 0,
-    });
+        // Orbiting Ring
+        const luxuryRing = new THREE.Mesh(ringGeo, slateMaterial);
+        luxuryRing.position.set(2.5, 0.4, -0.5);
+        luxuryRing.rotation.x = Math.PI / 3;
+        objectsGroup.add(luxuryRing);
 
-    // Low-poly Crystal Shard (Cream highlight)
-    const crystalShard = new THREE.Mesh(icosahedronGeo, creamShimmerMaterial);
-    crystalShard.position.set(-1.8, -2.4, 2.0);
-    objectsGroup.add(crystalShard);
-    floatingItems.push({
-      mesh: crystalShard,
-      initialPos: crystalShard.position.clone(),
-      rotSpeed: { x: 0.014, y: 0.018, z: 0.01 },
-      orbitSpeed: 0.006,
-      orbitRadius: 3.5,
-      orbitAngle: Math.PI * 1.2,
-      floatSpeed: 0.0022,
-      floatPhase: 1.4,
-    });
+        interface FloatingItem {
+          mesh: THREE.Mesh;
+          initialPos: THREE.Vector3;
+          rotSpeed: { x: number; y: number; z: number };
+          floatPhase: number;
+        }
 
-    // Orbiting mini shards
-    for (let i = 0; i < 7; i++) {
-      const isChrome = i % 2 === 0;
-      const shard = new THREE.Mesh(
-        smallShardGeo,
-        isChrome ? chromeMaterial : slateGlassMaterial
-      );
-      const angle = (i / 7) * Math.PI * 2;
-      const radius = 5.2 + Math.random() * 2.5;
-      const zPos = -1.5 + Math.random() * 4.0;
-      const yOffset = (Math.random() - 0.5) * 4;
+        const floatingItems: FloatingItem[] = [];
 
-      shard.position.set(
-        Math.cos(angle) * radius + 1.5,
-        Math.sin(angle) * radius * 0.4 + yOffset,
-        zPos
-      );
-      shard.scale.setScalar(0.5 + Math.random() * 0.65);
-      objectsGroup.add(shard);
+        // Glass-style Sphere
+        const glassSphere = new THREE.Mesh(sphereGeo, slateMaterial);
+        glassSphere.position.set(-3.2, 1.8, 1.2);
+        objectsGroup.add(glassSphere);
+        floatingItems.push({
+          mesh: glassSphere,
+          initialPos: glassSphere.position.clone(),
+          rotSpeed: { x: 0.008, y: 0.012, z: 0.005 },
+          floatPhase: 0,
+        });
 
-      floatingItems.push({
-        mesh: shard,
-        initialPos: shard.position.clone(),
-        rotSpeed: {
-          x: (Math.random() - 0.5) * 0.025,
-          y: (Math.random() - 0.5) * 0.025,
-          z: (Math.random() - 0.5) * 0.025,
-        },
-        orbitSpeed: 0.003 + Math.random() * 0.004,
-        orbitRadius: radius,
-        orbitAngle: angle,
-        floatSpeed: 0.0015 + Math.random() * 0.0015,
-        floatPhase: Math.random() * Math.PI * 2,
-      });
-    }
+        // Low-poly Crystal Shard
+        const crystalShard = new THREE.Mesh(icosahedronGeo, creamMaterial);
+        crystalShard.position.set(-1.8, -2.4, 2.0);
+        objectsGroup.add(crystalShard);
+        floatingItems.push({
+          mesh: crystalShard,
+          initialPos: crystalShard.position.clone(),
+          rotSpeed: { x: 0.012, y: 0.015, z: 0.008 },
+          floatPhase: 1.4,
+        });
 
-    // Subtle Mouse Parallax
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetX = 0;
-    let targetY = 0;
+        // Orbiting mini shards: Reduced to 4 items (down from 7)
+        for (let i = 0; i < 4; i++) {
+          const isChrome = i % 2 === 0;
+          const shard = new THREE.Mesh(
+            smallShardGeo,
+            isChrome ? chromeMaterial : slateMaterial
+          );
+          const angle = (i / 4) * Math.PI * 2;
+          const radius = 5.2 + i * 0.8;
+          const zPos = -1.0 + i * 0.9;
+          const yOffset = (i % 2 === 0 ? 1 : -1) * 1.5;
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const windowHalfX = window.innerWidth / 2;
-      const windowHalfY = window.innerHeight / 2;
-      targetX = (e.clientX - windowHalfX) * 0.0012;
-      targetY = (e.clientY - windowHalfY) * 0.0012;
-    };
+          shard.position.set(
+            Math.cos(angle) * radius + 1.5,
+            Math.sin(angle) * radius * 0.4 + yOffset,
+            zPos
+          );
+          shard.scale.setScalar(0.55);
+          objectsGroup.add(shard);
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+          floatingItems.push({
+            mesh: shard,
+            initialPos: shard.position.clone(),
+            rotSpeed: { x: 0.01, y: 0.012, z: 0.008 },
+            floatPhase: i * 1.2,
+          });
+        }
 
-    // Handle Resize
-    const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth || window.innerWidth;
-      const h = container.clientHeight || window.innerHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
+        // Subtle Mouse Parallax
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
 
-    window.addEventListener('resize', handleResize);
+        const handleMouseMove = (e: MouseEvent) => {
+          const windowHalfX = window.innerWidth / 2;
+          const windowHalfY = window.innerHeight / 2;
+          targetX = (e.clientX - windowHalfX) * 0.001;
+          targetY = (e.clientY - windowHalfY) * 0.001;
+        };
 
-    // Animation loop
-    let animationFrameId: number;
-    let clock = new THREE.Clock();
+        window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
-      const elapsedTime = clock.getElapsedTime();
+        // Resize handler
+        const handleResize = () => {
+          if (!container) return;
+          const w = container.clientWidth || window.innerWidth;
+          const h = container.clientHeight || window.innerHeight;
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h);
+        };
 
-      // Smooth mouse lerp
-      mouseX += (targetX - mouseX) * 0.05;
-      mouseY += (targetY - mouseY) * 0.05;
+        window.addEventListener('resize', handleResize, { passive: true });
 
-      // Camera dolly and object dispersion based on scroll
-      const currentScroll = scrollRef.current;
-      const scrollProgress = Math.min(currentScroll / 800, 1.5);
+        // Viewport IntersectionObserver: Only render when visible in viewport
+        observer = new IntersectionObserver(
+          (entries) => {
+            const entry = entries[0];
+            isVisible = entry.isIntersecting;
+            if (isVisible && !animationFrameId) {
+              lastTime = performance.now();
+              renderLoop();
+            }
+          },
+          { threshold: 0.05 }
+        );
+        observer.observe(container);
 
-      // Camera parallax + dolly
-      camera.position.x = mouseX * 3.5;
-      camera.position.y = -mouseY * 2.5;
-      camera.position.z = 14 - scrollProgress * 4.5;
-      camera.lookAt(0, 0, 0);
+        // Animation Loop with visibility check & delta capping
+        let clock = new THREE.Clock();
+        let lastTime = performance.now();
 
-      // Main Torus Knot rotation
-      mainTorus.rotation.x = elapsedTime * 0.22 + mouseY * 0.5;
-      mainTorus.rotation.y = elapsedTime * 0.35 + mouseX * 0.8;
-      mainTorus.position.y = 0.4 + Math.sin(elapsedTime * 0.8) * 0.18;
+        const renderLoop = () => {
+          if (isDisposed || !isVisible) {
+            animationFrameId = null;
+            return;
+          }
 
-      // Outer ring rotation
-      luxuryRing.rotation.z = -elapsedTime * 0.15;
-      luxuryRing.rotation.x = Math.PI / 3 + Math.sin(elapsedTime * 0.5) * 0.15;
+          animationFrameId = requestAnimationFrame(renderLoop);
 
-      // Animate floating items
-      floatingItems.forEach((item, index) => {
-        // Individual rotation
-        item.mesh.rotation.x += item.rotSpeed.x;
-        item.mesh.rotation.y += item.rotSpeed.y;
-        item.mesh.rotation.z += item.rotSpeed.z;
+          const elapsedTime = clock.getElapsedTime();
 
-        // Floating bounce
-        const floatY = Math.sin(elapsedTime * 1.5 + item.floatPhase) * 0.25;
+          // Smooth mouse lerp
+          mouseX += (targetX - mouseX) * 0.05;
+          mouseY += (targetY - mouseY) * 0.05;
 
-        // Scroll dispersion: objects push outward radially as user scrolls
-        const dispersion = 1 + scrollProgress * 0.85;
+          // Camera & scroll calculation
+          const currentScroll = scrollRef.current;
+          const scrollProgress = Math.min(currentScroll / 800, 1.5);
 
-        item.mesh.position.x =
-          (item.initialPos.x + Math.sin(elapsedTime * 0.4 + index) * 0.3) *
-          dispersion;
-        item.mesh.position.y =
-          item.initialPos.y + floatY + mouseY * 0.5;
-        item.mesh.position.z =
-          item.initialPos.z + Math.cos(elapsedTime * 0.3 + index) * 0.2 -
-          scrollProgress * 2;
-      });
+          camera.position.x = mouseX * 3.2;
+          camera.position.y = -mouseY * 2.2;
+          camera.position.z = 14 - scrollProgress * 4.0;
+          camera.lookAt(0, 0, 0);
 
-      renderer.render(scene, camera);
-    };
+          // Central sculpture rotation
+          mainTorus.rotation.x = elapsedTime * 0.2 + mouseY * 0.4;
+          mainTorus.rotation.y = elapsedTime * 0.3 + mouseX * 0.7;
+          mainTorus.position.y = 0.4 + Math.sin(elapsedTime * 0.7) * 0.15;
 
-    animate();
+          // Outer ring
+          luxuryRing.rotation.z = -elapsedTime * 0.12;
+          luxuryRing.rotation.x = Math.PI / 3 + Math.sin(elapsedTime * 0.4) * 0.12;
 
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('resize', handleResize);
-      if (container && renderer.domElement && container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+          // Floating items
+          floatingItems.forEach((item, index) => {
+            item.mesh.rotation.x += item.rotSpeed.x;
+            item.mesh.rotation.y += item.rotSpeed.y;
+            item.mesh.rotation.z += item.rotSpeed.z;
+
+            const floatY = Math.sin(elapsedTime * 1.2 + item.floatPhase) * 0.2;
+            const dispersion = 1 + scrollProgress * 0.6;
+
+            item.mesh.position.x =
+              (item.initialPos.x + Math.sin(elapsedTime * 0.3 + index) * 0.2) * dispersion;
+            item.mesh.position.y = item.initialPos.y + floatY + mouseY * 0.4;
+            item.mesh.position.z =
+              item.initialPos.z + Math.cos(elapsedTime * 0.3 + index) * 0.15 - scrollProgress * 1.8;
+          });
+
+          renderer.render(scene, camera);
+        };
+
+        // Start render loop
+        renderLoop();
+
+        cleanupFn = () => {
+          if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+          }
+          if (observer) {
+            observer.disconnect();
+          }
+          window.removeEventListener('mousemove', handleMouseMove);
+          window.removeEventListener('resize', handleResize);
+
+          if (container && renderer.domElement && container.contains(renderer.domElement)) {
+            container.removeChild(renderer.domElement);
+          }
+          renderer.dispose();
+          torusKnotGeo.dispose();
+          ringGeo.dispose();
+          sphereGeo.dispose();
+          icosahedronGeo.dispose();
+          smallShardGeo.dispose();
+          chromeMaterial.dispose();
+          slateMaterial.dispose();
+          creamMaterial.dispose();
+        };
+      } catch (err) {
+        console.warn('Three.js scene initialization skipped or failed:', err);
       }
-      renderer.dispose();
-      torusKnotGeo.dispose();
-      icosahedronGeo.dispose();
-      sphereGeo.dispose();
-      smallShardGeo.dispose();
-      ringGeo.dispose();
-      chromeMaterial.dispose();
-      slateGlassMaterial.dispose();
-      creamShimmerMaterial.dispose();
     };
-  }, []);
 
+    // Execute via requestIdleCallback if available, or fallback to setTimeout
+    if ('requestIdleCallback' in window) {
+      const idleId = (window as Window & { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback(
+        () => {
+          if (!isDisposed) initThreeScene();
+        },
+        { timeout: 1200 }
+      );
+      return () => {
+        isDisposed = true;
+        if ('cancelIdleCallback' in window) {
+          (window as Window & { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(idleId);
+        }
+        if (cleanupFn) cleanupFn();
+      };
+    } else {
+      const timeoutId = setTimeout(() => {
+        if (!isDisposed) initThreeScene();
+      }, 300);
+      return () => {
+        isDisposed = true;
+        clearTimeout(timeoutId);
+        if (cleanupFn) cleanupFn();
+      };
+    }
+  }, [isMobile, canStart]);
+
+  // Mobile Replacement: Static gradient + Ambros logo (Zero 3D overhead)
+  if (isMobile) {
+    return (
+      <div
+        id="hero-mobile-visual"
+        className="absolute inset-0 w-full h-full pointer-events-none flex items-center justify-center overflow-hidden"
+        aria-hidden="true"
+      >
+        {/* Static luxury atmospheric gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#12161c]/50 via-[#0a0a0a] to-[#0a0a0a]" />
+        <div className="absolute w-[320px] h-[320px] rounded-full bg-radial from-[#6d8196]/15 via-[#00a2ff]/05 to-transparent blur-3xl opacity-60" />
+
+        {/* Ambient Ambros Logo watermark in background */}
+        <div className="relative opacity-20 transform scale-110 select-none">
+          <AmbrosLogo size="xl" showTagline={false} />
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop 3D Canvas Mount Point
   return (
     <div
       ref={containerRef}
@@ -304,4 +386,4 @@ export default function ThreeHeroCanvas({ scrollY = 0 }: ThreeHeroCanvasProps) {
       aria-hidden="true"
     />
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { PageId } from '../types';
 import { BRAND, PARTNERS } from '../data/agencyData';
 import { ArrowUpRight, MessageCircle, Instagram, Facebook, Twitter, ShieldCheck } from 'lucide-react';
@@ -7,9 +8,9 @@ interface FooterProps {
   onNavigate: (page: PageId) => void;
 }
 
-export default function Footer({ onNavigate }: FooterProps) {
+export default memo(function Footer({ onNavigate }: FooterProps) {
   return (
-    <footer id="ambros-main-footer" className="bg-[#0a0a0a] border-t border-[#4a4a4a]/40 relative overflow-hidden">
+    <footer id="ambros-main-footer" className="section-content-visibility bg-[#0a0a0a] border-t border-[#4a4a4a]/40 relative overflow-hidden">
       {/* Subtle top glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-[#6d8196]/50 to-transparent" />
 
@@ -214,4 +215,4 @@ export default function Footer({ onNavigate }: FooterProps) {
       </div>
     </footer>
   );
-}
+});

@@ -1,11 +1,11 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, memo } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import { CASE_STUDIES } from '../data/agencyData';
 import { CaseStudy } from '../types';
 import CaseStudyModal from './CaseStudyModal';
 
-export default function WorkProjectSlider() {
+export default memo(function WorkProjectSlider() {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<CaseStudy | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -80,6 +80,9 @@ export default function WorkProjectSlider() {
               <img
                 src={study.image}
                 alt={study.altText}
+                width={600}
+                height={380}
+                decoding="async"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
               />
@@ -140,4 +143,4 @@ export default function WorkProjectSlider() {
       />
     </section>
   );
-}
+});

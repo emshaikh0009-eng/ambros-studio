@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageCircle, ArrowUp } from 'lucide-react';
 import { PageId } from './types';
@@ -6,6 +6,7 @@ import { BRAND } from './data/agencyData';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
+import BrandedPreloader from './components/BrandedPreloader';
 import IntroSequence from './components/IntroSequence';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
@@ -15,6 +16,7 @@ import ContactPage from './pages/ContactPage';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageId>('home');
+  const [preloaderCompleted, setPreloaderCompleted] = useState(false);
   const [introCompleted, setIntroCompleted] = useState<boolean>(() => {
     return sessionStorage.getItem('ambros_intro_seen') === 'true';
   });
@@ -38,29 +40,41 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // Back to top scroll listener
+  // Throttled back to top scroll listener via requestAnimationFrame
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 400);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setShowBackToTop(window.scrollY > 400);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navigateTo = (page: PageId) => {
+  const navigateTo = useCallback((page: PageId) => {
     setCurrentPage(page);
     window.location.hash = page;
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, []);
 
-  const scrollToTop = () => {
+  const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, []);
+
+  // 3D scene only allowed AFTER preloader AND intro sequence complete
+  const canLoad3D = useMemo(() => {
+    return preloaderCompleted && introCompleted && !forceIntro;
+  }, [preloaderCompleted, introCompleted, forceIntro]);
 
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <HomePage onNavigate={navigateTo} />;
+        return <HomePage onNavigate={navigateTo} canLoad3D={canLoad3D} />;
       case 'about':
         return <AboutPage onNavigate={navigateTo} />;
       case 'services':
@@ -70,17 +84,26 @@ export default function App() {
       case 'contact':
         return <ContactPage onNavigate={navigateTo} />;
       default:
-        return <HomePage onNavigate={navigateTo} />;
+        return <HomePage onNavigate={navigateTo} canLoad3D={canLoad3D} />;
     }
   };
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#cbcbcb] relative selection:bg-[#6d8196]/30 selection:text-[#FFFFE3]">
-      {/* Cinematic Custom Cursor */}
+      {/* High-Performance Custom Cursor (Pure transform/opacity) */}
       <CustomCursor />
 
-      {/* Mandatory Intro Sequence on first load */}
-      {(!introCompleted || forceIntro) && (
+      {/* Branded Preloader: Black screen → Ambros logo → Thin slate-blue progress bar → Fades out */}
+      {!preloaderCompleted && (
+        <BrandedPreloader
+          onComplete={() => {
+            setPreloaderCompleted(true);
+          }}
+        />
+      )}
+
+      {/* Intro Sequence after preloader */}
+      {preloaderCompleted && (!introCompleted || forceIntro) && (
         <IntroSequence
           forceShow={forceIntro}
           onComplete={() => {
@@ -96,7 +119,7 @@ export default function App() {
         onNavigate={navigateTo}
       />
 
-      {/* Page Content with smooth transition */}
+      {/* Page Content with smooth GPU-accelerated transition */}
       <main id="main-content-stage" className="relative">
         <AnimatePresence mode="wait">
           <motion.div
@@ -104,7 +127,7 @@ export default function App() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
             {renderPage()}
           </motion.div>
@@ -139,17 +162,11 @@ export default function App() {
           href={BRAND.whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="relative w-13 h-13 rounded-full bg-[#6d8196] text-[#FFFFE3] flex items-center justify-center shadow-[0_0_25px_rgba(109,129,150,0.6)] border border-[#FFFFE3]/30 cursor-pointer group"
-          aria-label="Chat with Anas on WhatsApp"
+          className="px-4 py-2.5 rounded-full bg-[#25D366]/90 hover:bg-[#25D366] text-black font-tech text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-[0_10px_30px_rgba(37,211,102,0.35)] transition-all cursor-pointer"
+          aria-label="Contact on WhatsApp"
         >
-          <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#FFFFE3] animate-ping" />
-          <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#FFFFE3]" />
-          <MessageCircle className="w-6 h-6" />
-
-          {/* Tooltip on hover */}
-          <span className="absolute right-16 px-3 py-1.5 rounded-lg bg-[#181a1d] text-[#FFFFE3] border border-[#6d8196]/40 text-xs font-tech tracking-wider whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg">
-            Chat on WhatsApp
-          </span>
+          <MessageCircle className="w-4 h-4 fill-black" />
+          <span className="hidden sm:inline">WhatsApp</span>
         </motion.a>
       </div>
     </div>

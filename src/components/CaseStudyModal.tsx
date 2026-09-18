@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ArrowUpRight, CheckCircle2, TrendingUp, Sparkles, MessageCircle } from 'lucide-react';
 import { CaseStudy } from '../types';
@@ -9,7 +9,7 @@ interface CaseStudyModalProps {
   onClose: () => void;
 }
 
-export default function CaseStudyModal({ caseStudy, onClose }: CaseStudyModalProps) {
+export default memo(function CaseStudyModal({ caseStudy, onClose }: CaseStudyModalProps) {
   if (!caseStudy) return null;
 
   return (
@@ -24,11 +24,11 @@ export default function CaseStudyModal({ caseStudy, onClose }: CaseStudyModalPro
             opacity: 1,
             scale: 1,
             y: 0,
-            transition: { type: 'spring', damping: 22, stiffness: 180 },
+            transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] },
           }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-4xl bg-[#0e1014] border border-[#4a4a4a] rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.8)] overflow-hidden my-auto max-h-[90vh] flex flex-col"
+          className="relative w-full max-w-4xl bg-[#0e1014] border border-[#4a4a4a] rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.8)] overflow-hidden my-auto max-h-[90vh] flex flex-col will-change-transform"
         >
           {/* Header Bar */}
           <div className="flex items-center justify-between p-6 border-b border-[#4a4a4a]/40 bg-[#0a0a0a]/60 backdrop-blur-sm sticky top-0 z-20">
@@ -58,6 +58,9 @@ export default function CaseStudyModal({ caseStudy, onClose }: CaseStudyModalPro
               <img
                 src={caseStudy.image}
                 alt={caseStudy.altText}
+                width={800}
+                height={500}
+                decoding="async"
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
@@ -166,4 +169,4 @@ export default function CaseStudyModal({ caseStudy, onClose }: CaseStudyModalPro
       </div>
     </AnimatePresence>
   );
-}
+});

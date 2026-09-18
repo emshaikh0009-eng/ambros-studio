@@ -1,15 +1,15 @@
+import { memo } from 'react';
 import { motion } from 'motion/react';
-import { ArrowUpRight, MessageCircle, Instagram, Facebook, Twitter, ShieldCheck, Users, Sparkles } from 'lucide-react';
+import { MessageCircle, Instagram, Facebook, Twitter, ShieldCheck, Users } from 'lucide-react';
 import { BRAND, FOUNDER_IMAGE, PARTNERS, TEAM_SPECIALISTS } from '../data/agencyData';
 import TestimonialsSlider from '../components/TestimonialsSlider';
-import MagneticButton from '../components/MagneticButton';
 import { PageId } from '../types';
 
 interface AboutPageProps {
   onNavigate: (page: PageId) => void;
 }
 
-export default function AboutPage({ onNavigate }: AboutPageProps) {
+export default memo(function AboutPage({ onNavigate }: AboutPageProps) {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#cbcbcb] pt-32 pb-24 overflow-hidden">
       {/* Background ambient lighting */}
@@ -46,10 +46,14 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
             <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-[#6d8196]/40 via-[#4a4a4a]/20 to-[#FFFFE3]/20 blur-lg opacity-70 group-hover:opacity-100 transition-opacity duration-700" />
 
             <div className="relative rounded-2xl overflow-hidden border border-[#6d8196]/40 bg-[#181a1d] shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
-              {/* Photo */}
+              {/* Photo — WebP, 800w, <200KB, lazy loading & async decoding */}
               <img
                 src={FOUNDER_IMAGE}
                 alt="Anas Shaikh — Founder & CEO of AmbrosStudio"
+                width={800}
+                height={1071}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-[520px] object-cover object-center grayscale contrast-105 group-hover:grayscale-0 transition-all duration-700"
               />
 
@@ -81,40 +85,36 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.15 }}
+            transition={{ duration: 0.8 }}
             className="lg:col-span-7 space-y-6"
           >
             <div className="inline-flex items-center gap-2 font-tech text-xs uppercase tracking-widest text-[#6d8196]">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>A Letter From The Founder</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#6d8196]" />
+              <span>A Letter From Our Founder</span>
             </div>
 
-            <h2 className="font-serif-luxury text-4xl sm:text-5xl text-[#FFFFE3] leading-tight">
-              &ldquo;Your business deserves nothing less than genuine purpose.&rdquo;
+            <h2 className="font-serif-luxury text-3xl sm:text-4xl md:text-5xl text-[#FFFFE3] leading-tight">
+              &ldquo;Ambition Deserves a Proper Foundation.&rdquo;
             </h2>
 
-            {/* Verbatim Founder Bio */}
-            <p className="font-sans text-base sm:text-lg text-[#cbcbcb] leading-relaxed">
-              {BRAND.founderBio}
-            </p>
-
-            {/* Strategic Mission Quote */}
-            <div className="p-6 rounded-xl bg-[#181a1d]/60 border-l-2 border-[#6d8196] text-sm text-[#FFFFE3] italic font-serif-luxury leading-relaxed">
-              &ldquo;{BRAND.mission}&rdquo;
+            <div className="space-y-4 font-sans text-sm sm:text-base text-[#cbcbcb]/90 leading-relaxed">
+              <p>
+                I started Ambros because I kept meeting brilliant business owners who were invisible online. Not because they lacked ambition — but because no one had built them the right digital foundation.
+              </p>
+              <p>
+                I assembled a dedicated team of five specialists who do exactly that: design, develop, advertise, and grow. We operate as a high-velocity studio where code quality, visual prestige, and conversion psychology intersect.
+              </p>
+              <p>
+                Every project we take on is crafted with purpose — because your business deserves nothing less than enduring excellence.
+              </p>
             </div>
 
-            {/* Signature & Socials */}
-            <div className="pt-6 border-t border-[#4a4a4a]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-              <div>
-                <div className="font-serif-luxury text-2xl text-[#FFFFE3] italic">
-                  Anas Shaikh
-                </div>
-                <div className="font-tech text-xs text-[#cbcbcb]/60 uppercase tracking-widest mt-0.5">
-                  Founder & CEO, AmbrosStudio
-                </div>
-              </div>
+            {/* Social handles & Direct WhatsApp */}
+            <div className="pt-6 border-t border-[#4a4a4a]/40 flex flex-wrap items-center gap-4">
+              <span className="font-tech text-xs uppercase text-[#cbcbcb]/60">
+                Connect Directly:
+              </span>
 
-              {/* Social Channels */}
               <div className="flex items-center gap-3">
                 <a
                   href={BRAND.instagramUrl}
@@ -162,7 +162,7 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
       {/* ========================================================================= */}
       {/* TEAM SECTION — A TEAM OF 5 SPECIALISTS */}
       {/* ========================================================================= */}
-      <section id="team-section" className="max-w-7xl mx-auto px-6 md:px-12 py-20 relative z-10">
+      <section id="team-section" className="section-content-visibility max-w-7xl mx-auto px-6 md:px-12 py-20 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
             <div className="inline-flex items-center gap-2 font-tech text-xs uppercase tracking-widest text-[#6d8196] mb-3">
@@ -220,7 +220,7 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
       {/* ========================================================================= */}
       {/* PARTNERS SECTION */}
       {/* ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 relative z-10 border-t border-[#4a4a4a]/30">
+      <section className="section-content-visibility max-w-7xl mx-auto px-6 md:px-12 py-16 relative z-10 border-t border-[#4a4a4a]/30">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 font-tech text-xs uppercase tracking-widest text-[#6d8196] mb-3">
             <ShieldCheck className="w-3.5 h-3.5" />
@@ -257,12 +257,14 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
       </section>
 
       {/* ========================================================================= */}
-      {/* TESTIMONIALS SLIDER ON ABOUT PAGE (AS SPECIFIED) */}
+      {/* TESTIMONIALS SLIDER ON ABOUT PAGE */}
       {/* ========================================================================= */}
-      <TestimonialsSlider
-        title="Reputation Earned In Production."
-        subtitle="Feedback from founders who trusted Anas and our five specialists."
-      />
+      <div className="section-content-visibility">
+        <TestimonialsSlider
+          title="Reputation Earned In Production."
+          subtitle="Feedback from founders who trusted Anas and our five specialists."
+        />
+      </div>
     </div>
   );
-}
+});

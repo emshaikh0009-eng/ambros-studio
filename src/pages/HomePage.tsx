@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, MessageCircle, Layers, TrendingUp, CreditCard, Sparkles, CheckCircle2, ShieldCheck } from 'lucide-react';
 import ThreeHeroCanvas from '../components/ThreeHeroCanvas';
@@ -11,14 +11,23 @@ import { PageId } from '../types';
 
 interface HomePageProps {
   onNavigate: (page: PageId) => void;
+  canLoad3D?: boolean;
 }
 
-export default function HomePage({ onNavigate }: HomePageProps) {
+export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePageProps) {
   const [scrollY, setScrollY] = useState(0);
 
+  // Throttled scroll listener via requestAnimationFrame
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setScrollY(window.scrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -40,20 +49,20 @@ export default function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="relative min-h-screen bg-[#0a0a0a] text-[#cbcbcb] overflow-hidden">
       {/* ========================================================================= */}
-      {/* SECTION 2 — 3D HERO WITH FLOATING CHROME & GLASS SCULPTURES */}
+      {/* SECTION 1 — 3D HERO (LAZY MOUNTED POST-INTRO & IDLE) */}
       {/* ========================================================================= */}
       <section
         id="hero-3d-section"
         className="relative min-h-screen flex items-center justify-center pt-24 pb-16 px-6 md:px-12 overflow-hidden"
       >
-        {/* Three.js Canvas Scene */}
-        <ThreeHeroCanvas scrollY={scrollY} />
+        {/* Three.js Canvas Scene: Lazy mounted and paused out of viewport */}
+        <ThreeHeroCanvas scrollY={scrollY} canStart={canLoad3D} />
 
-        {/* Ambient Radial Vignette & Grain */}
+        {/* Ambient Radial Vignette & CSS Grain (Zero 3D post-processing) */}
         <div className="absolute inset-0 bg-grain pointer-events-none opacity-40" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-[#0a0a0a]/60 pointer-events-none" />
 
-        {/* Floating UI Chips in the corners (inspired by Apple / Awwwards reference) */}
+        {/* Floating UI Chips in the corners */}
         <div className="hidden lg:block absolute top-32 left-12 z-20 pointer-events-auto">
           <div className="px-4 py-2 rounded-full glass-panel border border-[#6d8196]/30 text-xs font-tech text-[#FFFFE3] shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#6d8196] animate-pulse" />
@@ -114,7 +123,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
             Crafted With Purpose.
           </motion.h1>
 
-          {/* Sub-headline (2 lines max) */}
+          {/* Sub-headline */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -124,7 +133,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
             We design, build, and grow digital experiences for businesses ready to scale.
           </motion.p>
 
-          {/* Two CTAs: [ Start a Project ] (→ WhatsApp) and [ See Our Work ] (→ scroll/portfolio) */}
+          {/* Two CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -170,11 +179,11 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* ========================================================================= */}
-      {/* TRUST BAR — STRATEGIC ALLIES & PARTNERS */}
+      {/* TRUST BAR — STRATEGIC ALLIES & PARTNERS (Optimized off-screen rendering) */}
       {/* ========================================================================= */}
       <section
         id="partners-trust-bar"
-        className="py-12 border-y border-[#4a4a4a]/40 bg-[#0a0a0a]/90 backdrop-blur-md relative z-10"
+        className="section-content-visibility py-12 border-y border-[#4a4a4a]/40 bg-[#0a0a0a]/90 backdrop-blur-md relative z-10"
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex items-center gap-3 flex-shrink-0">
@@ -208,9 +217,9 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* ========================================================================= */}
-      {/* MISSION CALLOUT (VERBATIM BRAND COPY) */}
+      {/* MISSION CALLOUT */}
       {/* ========================================================================= */}
-      <section className="py-24 px-6 md:px-12 max-w-5xl mx-auto text-center relative z-10">
+      <section className="section-content-visibility py-24 px-6 md:px-12 max-w-5xl mx-auto text-center relative z-10">
         <span className="font-tech text-xs uppercase tracking-widest text-[#6d8196] block mb-4">
           Why Ambros Exists
         </span>
@@ -226,7 +235,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       {/* ========================================================================= */}
       {/* SERVICES PREVIEW — 3 CARDS */}
       {/* ========================================================================= */}
-      <section id="services-preview-section" className="py-20 px-6 md:px-12 max-w-7xl mx-auto relative z-10">
+      <section id="services-preview-section" className="section-content-visibility py-20 px-6 md:px-12 max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
             <div className="inline-flex items-center gap-2 font-tech text-xs uppercase tracking-widest text-[#6d8196] mb-3">
@@ -310,28 +319,32 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* ========================================================================= */}
-      {/* WORK / PROJECT HORIZONTAL SLIDER (MANDATORY) */}
+      {/* WORK / PROJECT HORIZONTAL SLIDER */}
       {/* ========================================================================= */}
-      <WorkProjectSlider />
+      <div className="section-content-visibility">
+        <WorkProjectSlider />
+      </div>
 
       {/* ========================================================================= */}
       {/* DIGITAL VISITING CARDS INTERACTIVE 3D SIMULATOR */}
       {/* ========================================================================= */}
-      <section className="py-20 px-6 md:px-12 max-w-7xl mx-auto relative z-10">
+      <section className="section-content-visibility py-20 px-6 md:px-12 max-w-7xl mx-auto relative z-10">
         <DigitalCardPreview />
       </section>
 
       {/* ========================================================================= */}
-      {/* TESTIMONIALS SLIDER (MANDATORY) */}
+      {/* TESTIMONIALS SLIDER */}
       {/* ========================================================================= */}
-      <TestimonialsSlider />
+      <div className="section-content-visibility">
+        <TestimonialsSlider />
+      </div>
 
       {/* ========================================================================= */}
       {/* BIG FINAL CTA SECTION */}
       {/* ========================================================================= */}
       <section
         id="home-big-cta"
-        className="py-28 px-6 md:px-12 relative overflow-hidden text-center bg-gradient-to-b from-[#0a0a0a] via-[#101317] to-[#0a0a0a] border-t border-[#4a4a4a]/40"
+        className="section-content-visibility py-28 px-6 md:px-12 relative overflow-hidden text-center bg-gradient-to-b from-[#0a0a0a] via-[#101317] to-[#0a0a0a] border-t border-[#4a4a4a]/40"
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-radial from-[#6d8196]/20 to-transparent blur-3xl pointer-events-none" />
 
@@ -374,4 +387,4 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       </section>
     </div>
   );
-}
+});

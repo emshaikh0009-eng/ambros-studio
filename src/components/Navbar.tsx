@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, ArrowUpRight, MessageCircle } from 'lucide-react';
 import { PageId } from '../types';
@@ -10,14 +10,22 @@ interface NavbarProps {
   onNavigate: (page: PageId) => void;
 }
 
-export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
+export default memo(function Navbar({ currentPage, onNavigate }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hoveredNav, setHoveredNav] = useState<PageId | null>(null);
 
+  // Throttled scroll listener
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 25);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 25);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -248,4 +256,4 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
       </AnimatePresence>
     </>
   );
-}
+});

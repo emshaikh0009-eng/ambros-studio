@@ -22,8 +22,8 @@ export const BRAND = {
     "I started Ambros because I kept meeting brilliant business owners who were invisible online. Not because they lacked ambition — but because no one had built them the right digital foundation. I built a team of five specialists who do exactly that: design, develop, advertise, and grow. Every project we take on is crafted with purpose — because your business deserves nothing less.",
 };
 
-// Official Founder Portrait — Anas Shaikh, Founder & CEO of AmbrosStudio
-export const FOUNDER_IMAGE = '/src/assets/images/anas_shaikh_founder_1789725102192.jpg';
+// Official Founder Portrait — Anas Shaikh, Founder & CEO of AmbrosStudio (Optimized WebP, 800w, <200KB)
+export const FOUNDER_IMAGE = '/src/assets/images/anas_shaikh_founder.webp';
 
 // TODO: Partner logos — text-based for now, swap with SVG / PNG image assets later
 export const PARTNERS: Partner[] = [
@@ -125,7 +125,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     category: 'Flagship 3D Web & Design System',
     tag: 'Web Flagship',
     year: '2026',
-    image: '/src/assets/images/aura_villa_architecture_1789725130050.jpg',
+    image: '/src/assets/images/aura_villa_architecture_1789725130050.webp',
     altText: 'The Pinnacle of Luxury Architectural Masterpieces 3D interactive web showcase by AmbrosStudio',
     brief:
       'A premier ultra-luxury architectural developer required an Awwwards-caliber digital experience to showcase their multi-million dollar modernist villas, private estates, and interior collections to international buyers.',
@@ -158,7 +158,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     category: 'Website + Brand Architecture',
     tag: 'Web Flagship',
     year: '2026',
-    image: '/src/assets/images/case_nova_interiors_1789724261494.jpg',
+    image: '/src/assets/images/case_nova_interiors_1789724261494.webp',
     altText: 'Nova Interiors luxury architectural web design layout showcased on minimal display',
     brief:
       'Nova Interiors, an ultra-luxury architectural firm, struggled with a sluggish legacy website that failed to mirror their multi-million dollar residential portfolio or capture affluent private developers.',
@@ -191,7 +191,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     category: 'Meta Ads Funnel + Growth',
     tag: 'Digital Ads',
     year: '2026',
-    image: '/src/assets/images/case_brew_bloom_1789724294232.jpg',
+    image: '/src/assets/images/case_brew_bloom_1789724294232.webp',
     altText: 'Brew & Bloom Cafe targeted Instagram video ads and coffee roastery lifestyle',
     brief:
       'A rapidly growing artisanal roastery and botanical café needed to fill off-peak weekday tables and scale their high-margin specialty coffee bean subscription across metro cities.',
@@ -224,7 +224,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     category: 'Digital Card Suite + Identity',
     tag: 'Digital Cards',
     year: '2026',
-    image: '/src/assets/images/case_digital_cards_1789724276918.jpg',
+    image: '/src/assets/images/case_digital_cards_1789724276918.webp',
     altText: 'Kite Legal sleek matte black NFC smart visiting card on marble slate',
     brief:
       'A prestigious 40-attorney corporate law firm needed an executive, modern networking solution to replace outdated paper visiting cards at international arbitration conferences.',
@@ -257,7 +257,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     category: 'Full Digital Rebrand + Ads',
     tag: 'Full Transformation',
     year: '2026',
-    image: '/src/assets/images/case_nova_interiors_1789724261494.jpg',
+    image: '/src/assets/images/case_nova_interiors_1789724261494.webp',
     altText: 'Atlas Fitness modern web experience and membership acquisition funnel',
     brief:
       'A premium strength and athletic conditioning gym chain was losing high-end personal training leads to low-cost generic fitness centers due to an outdated digital presence.',

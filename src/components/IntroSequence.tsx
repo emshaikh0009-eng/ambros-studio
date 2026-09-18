@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface IntroSequenceProps {
@@ -6,7 +6,7 @@ interface IntroSequenceProps {
   forceShow?: boolean;
 }
 
-export default function IntroSequence({ onComplete, forceShow = false }: IntroSequenceProps) {
+export default memo(function IntroSequence({ onComplete, forceShow = false }: IntroSequenceProps) {
   const [isVisible, setIsVisible] = useState(true);
   const letters = 'AMBROS'.split('');
 
@@ -34,7 +34,7 @@ export default function IntroSequence({ onComplete, forceShow = false }: IntroSe
     setIsVisible(false);
     setTimeout(() => {
       onComplete();
-    }, 600); // Allow fade-out animation to complete
+    }, 500); // Allow fade-out animation to complete
   };
 
   return (
@@ -46,7 +46,7 @@ export default function IntroSequence({ onComplete, forceShow = false }: IntroSe
           exit={{
             opacity: 0,
             scale: 1.05,
-            transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+            transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
           }}
           className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0a0a0a] overflow-hidden select-none cursor-pointer"
           onClick={handleFinish}
@@ -66,7 +66,7 @@ export default function IntroSequence({ onComplete, forceShow = false }: IntroSe
               times: [0, 0.55, 1],
               ease: 'easeOut',
             }}
-            className="absolute w-[440px] h-[440px] rounded-full bg-radial from-[#6d8196]/35 via-[#FFFFE3]/10 to-transparent blur-3xl pointer-events-none"
+            className="absolute w-[440px] h-[440px] rounded-full bg-radial from-[#6d8196]/35 via-[#FFFFE3]/10 to-transparent blur-3xl pointer-events-none will-change-transform"
           />
 
           <div className="relative z-10 flex flex-col items-center">
@@ -75,14 +75,14 @@ export default function IntroSequence({ onComplete, forceShow = false }: IntroSe
               {letters.map((char, index) => (
                 <motion.span
                   key={index}
-                  initial={{ opacity: 0, y: 32, filter: 'blur(8px)' }}
-                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  initial={{ opacity: 0, y: 28 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{
-                    duration: 0.65,
-                    delay: 0.25 + index * 0.065,
+                    duration: 0.55,
+                    delay: 0.2 + index * 0.05,
                     ease: [0.16, 1, 0.3, 1],
                   }}
-                  className="font-tech font-black text-6xl md:text-8xl lg:text-9xl text-[#FFFFE3] tracking-[0.14em] leading-none select-none drop-shadow-[0_0_35px_rgba(255,255,227,0.3)]"
+                  className="font-tech font-black text-6xl md:text-8xl lg:text-9xl text-[#FFFFE3] tracking-[0.14em] leading-none select-none drop-shadow-[0_0_35px_rgba(255,255,227,0.3)] will-change-transform"
                 >
                   {char}
                 </motion.span>
@@ -94,24 +94,24 @@ export default function IntroSequence({ onComplete, forceShow = false }: IntroSe
               initial={{ scaleX: 0, opacity: 0 }}
               animate={{ scaleX: 1, opacity: 1 }}
               transition={{
-                duration: 0.85,
-                delay: 0.75,
+                duration: 0.8,
+                delay: 0.65,
                 ease: [0.22, 1, 0.36, 1],
               }}
               style={{ originX: 0 }}
-              className="w-full h-[3px] md:h-[4px] mt-4 mb-3 bg-[#00a2ff] shadow-[0_0_15px_#00a2ff,0_0_30px_rgba(0,162,255,0.5)]"
+              className="w-full h-[3px] md:h-[4px] mt-4 mb-3 bg-[#00a2ff] shadow-[0_0_15px_#00a2ff,0_0_30px_rgba(0,162,255,0.5)] will-change-transform"
             />
 
             {/* CRAFTED WITH PURPOSE with wide letter-spacing */}
             <motion.div
-              initial={{ opacity: 0, y: 12, letterSpacing: '0.25em' }}
-              animate={{ opacity: 0.95, y: 0, letterSpacing: '0.38em' }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 0.95, y: 0 }}
               transition={{
-                duration: 0.9,
-                delay: 1.05,
+                duration: 0.7,
+                delay: 0.9,
                 ease: 'easeOut',
               }}
-              className="font-tech text-xs md:text-sm lg:text-base font-bold uppercase text-white/95 text-center pl-1"
+              className="font-tech text-xs md:text-sm lg:text-base font-bold uppercase tracking-[0.38em] text-white/95 text-center pl-1 will-change-transform"
             >
               CRAFTED WITH PURPOSE
             </motion.div>
@@ -120,4 +120,4 @@ export default function IntroSequence({ onComplete, forceShow = false }: IntroSe
       )}
     </AnimatePresence>
   );
-}
+});
