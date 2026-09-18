@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-dark-base: #4a4a4a;
+    --color-light-neutral: #cbcbcb;
+    --color-cream: #FFFFE3;
+    --color-slate-blue: #6d8196;
+    --color-black: #0a0a0a;
+    --color-offwhite: #f5f5f5;
+  }
+
+  body {
+    background-color: #0a0a0a;
+    color: #cbcbcb;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-serif-luxury {
+    font-family: 'Instrument Serif', Georgia, serif;
+    letter-spacing: -0.02em;
+  }
+
+  .font-tech {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+}
+
+/* Subtle cinematic noise overlay */
+.bg-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6d8196;
+}
+
+/* Glassmorphic utilities */
+.glass-panel {
+  background: rgba(10, 10, 10, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(109, 129, 150, 0.18);
+}
+
+.glass-card {
+  background: radial-gradient(120% 120% at 50% 0%, rgba(74, 74, 74, 0.28) 0%, rgba(10, 10, 10, 0.85) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(203, 203, 203, 0.12);
+}
+
+.glass-card:hover {
+  border-color: rgba(109, 129, 150, 0.38);
+}
+
+/* Glow effects */
+.glow-slate {
+  box-shadow: 0 0 40px -10px rgba(109, 129, 150, 0.35);
+}
+
+.glow-cream {
+  box-shadow: 0 0 50px -15px rgba(255, 255, 227, 0.25);
+}
+
+/* Typography tracking */
+.tracking-cinematic {
+  letter-spacing: 0.35em;
+}
+
+/* Text glow */
+.text-glow-cream {
+  text-shadow: 0 0 25px rgba(255, 255, 227, 0.35);
+}
+
+.text-glow-slate {
+  text-shadow: 0 0 20px rgba(109, 129, 150, 0.4);
+}
+
