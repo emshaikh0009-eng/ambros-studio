@@ -31,7 +31,7 @@ export default memo(function TestimonialsSlider({
 
     timerRef.current = setInterval(() => {
       handleNext();
-    }, 6000);
+    }, 5000);
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -41,30 +41,32 @@ export default memo(function TestimonialsSlider({
   return (
     <section
       id="testimonials-slider-section"
-      className="relative py-28 px-6 md:px-12 max-w-7xl mx-auto overflow-hidden"
+      className="relative py-20 md:py-28 px-5 md:px-12 max-w-7xl mx-auto overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
     >
       {/* Background soft ambient radial glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-radial from-[#6d8196]/15 via-transparent to-transparent blur-3xl pointer-events-none" />
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 relative z-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-16 gap-6 relative z-10">
         <div>
           <div className="inline-flex items-center gap-2 font-tech text-xs uppercase tracking-widest text-[#6d8196] mb-3">
             <span className="w-2 h-2 rounded-full bg-[#6d8196]" />
             <span>Client Feedback & Impact</span>
           </div>
-          <h2 className="font-serif-luxury text-4xl md:text-6xl text-[#FFFFE3]">
+          <h2 className="font-serif-luxury text-3xl md:text-6xl text-[#FFFFE3]">
             {title}
           </h2>
-          <p className="font-sans text-[#cbcbcb]/80 text-base md:text-lg mt-2 max-w-xl">
+          <p className="font-sans text-[#cbcbcb]/80 text-sm md:text-lg mt-2 max-w-xl">
             {subtitle}
           </p>
         </div>
 
-        {/* Magnetic Prev / Next Navigation Arrows */}
-        <div className="flex items-center gap-3">
+        {/* Magnetic Prev / Next Navigation Arrows: Hidden on mobile (<768px), visible on desktop */}
+        <div className="hidden md:flex items-center gap-3">
           <button
             type="button"
             onClick={handlePrev}
