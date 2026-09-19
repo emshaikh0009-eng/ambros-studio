@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState, useEffect, useRef } from 'react';
 
 interface CaseStudyVisualProps {
   title: string;
@@ -29,13 +29,44 @@ export default memo(function CaseStudyVisual({
   className = '',
   size = 'card',
 }: CaseStudyVisualProps) {
+  const [isActive, setIsActive] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lastTapRef = useRef(0);
   const resolvedAlt = altText || imageAlt || title;
-  console.log('CaseStudyVisual', { image, altText: resolvedAlt, width, height });
   const isModal = size === 'modal';
+
+  const handleToggle = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    const now = Date.now();
+    if (now - lastTapRef.current < 300) return;
+    lastTapRef.current = now;
+    setIsActive((prev) => !prev);
+  };
+
+  // Tap outside dismisses the active color state
+  useEffect(() => {
+    if (!isActive) return;
+    const handleOutside = (e: MouseEvent | TouchEvent | PointerEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsActive(false);
+      }
+    };
+    window.addEventListener('pointerdown', handleOutside);
+    window.addEventListener('touchstart', handleOutside);
+    return () => {
+      window.removeEventListener('pointerdown', handleOutside);
+      window.removeEventListener('touchstart', handleOutside);
+    };
+  }, [isActive]);
 
   return (
     <div
-      className={`relative w-full h-full overflow-hidden flex flex-col items-center justify-center text-center select-none ${className}`}
+      ref={containerRef}
+      onPointerDown={handleToggle}
+      onTouchStart={handleToggle}
+      className={`relative w-full h-full overflow-hidden flex flex-col items-center justify-center text-center select-none transition-all duration-500 cursor-pointer ${
+        isActive ? 'is-active glow-on-active' : ''
+      } ${className}`}
       style={{
         background: 'linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%)',
       }}
@@ -59,7 +90,7 @@ export default memo(function CaseStudyVisual({
         }}
       />
 
-      {/* Real Image Tag: unconditionally rendered, sits behind title text, grayscale hover effect */}
+      {/* Real Image Tag: unconditionally rendered, sits behind title text, grayscale hover & tap effect */}
       <img
         src={image}
         alt={resolvedAlt}
@@ -67,7 +98,11 @@ export default memo(function CaseStudyVisual({
         decoding="async"
         width={width}
         height={height}
-        className="absolute inset-0 w-full h-full object-cover grayscale contrast-105 group-hover:grayscale-0 group-active:grayscale-0 transition-all duration-700 ease-out group-hover:scale-105 z-0"
+        className={`absolute inset-0 w-full h-full object-cover contrast-105 transition-all duration-700 ease-out group-hover:scale-105 z-0 ${
+          isActive
+            ? 'grayscale-0'
+            : 'grayscale contrast-105 group-hover:grayscale-0 group-active:grayscale-0'
+        }`}
         onError={(e) => {
           e.currentTarget.style.display = 'none';
         }}
