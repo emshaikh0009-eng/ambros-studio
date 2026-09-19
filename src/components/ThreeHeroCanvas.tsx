@@ -357,7 +357,7 @@ export default memo(function ThreeHeroCanvas({
     }
   }, [isMobile, canStart]);
 
-  // Mobile Replacement: Static gradient + Ambros logo (Zero 3D overhead)
+  // Mobile Replacement: Static slate-blue radial gradient + grain (Zero 3D overhead)
   if (isMobile) {
     return (
       <div
@@ -365,14 +365,11 @@ export default memo(function ThreeHeroCanvas({
         className="absolute inset-0 w-full h-full pointer-events-none flex items-center justify-center overflow-hidden"
         aria-hidden="true"
       >
-        {/* Static luxury atmospheric gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#12161c]/50 via-[#0a0a0a] to-[#0a0a0a]" />
-        <div className="absolute w-[320px] h-[320px] rounded-full bg-radial from-[#6d8196]/15 via-[#00a2ff]/05 to-transparent blur-3xl opacity-60" />
-
-        {/* Ambient Ambros Logo watermark in background — hidden on mobile (<768px) to prevent hero text overlap */}
-        <div className="hidden md:block relative opacity-20 transform scale-110 select-none">
-          <AmbrosLogo size="xl" showTagline={false} />
-        </div>
+        {/* Static slate-blue radial gradient + subtle grain */}
+        <div className="absolute inset-0 bg-[#0a0a0a]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#12161c]/60 via-[#0a0a0a] to-[#0a0a0a]" />
+        <div className="absolute w-[360px] h-[360px] rounded-full bg-radial from-[#6d8196]/25 via-[#6d8196]/05 to-transparent blur-3xl opacity-75" />
+        <div className="absolute inset-0 bg-grain opacity-40 pointer-events-none" />
       </div>
     );
   }
@@ -387,3 +384,5 @@ export default memo(function ThreeHeroCanvas({
     />
   );
 });
+
+
