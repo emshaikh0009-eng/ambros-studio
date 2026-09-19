@@ -5,7 +5,7 @@ import ThreeHeroCanvas from '../components/ThreeHeroCanvas';
 import WorkProjectSlider from '../components/WorkProjectSlider';
 import TestimonialsSlider from '../components/TestimonialsSlider';
 import MagneticButton from '../components/MagneticButton';
-import { BRAND, SERVICES, PARTNERS } from '../data/agencyData';
+import { BRAND, SERVICES } from '../data/agencyData';
 import { PageId } from '../types';
 
 interface HomePageProps {
@@ -245,46 +245,7 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
         </div>
       </section>
 
-      {/* ========================================================================= */}
-      {/* 3. TRUST / PARTNER STRIP (Mobile: 120x60px, Desktop: 160x80px) */}
-      {/* ========================================================================= */}
-      <section
-        id="trust-partners-strip"
-        className="py-5 sm:py-6 px-4 sm:px-6 md:px-12 overflow-hidden border-b border-[#4a4a4a]/25 bg-[#0e1013]/60"
-        aria-label="Strategic Partners"
-      >
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between md:justify-center md:gap-4 mb-3 px-1">
-            <span className="font-tech text-[10px] sm:text-[11px] uppercase tracking-[0.1em] text-[#6d8196] font-semibold">
-              Strategic Partners
-            </span>
-            <span className="font-tech text-[9px] sm:text-[10px] text-[#cbcbcb]/50 md:hidden">
-              Swipe →
-            </span>
-          </div>
-          <div
-            className="flex gap-2.5 sm:gap-3 overflow-x-auto md:overflow-x-visible md:justify-center md:flex-wrap pb-2 md:pb-0 scrollbar-none snap-x snap-mandatory"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
-            {PARTNERS.map((partner, idx) => (
-              <div
-                key={idx}
-                className="w-[120px] min-w-[120px] h-[60px] md:w-[160px] md:min-w-[160px] md:h-[80px] snap-center rounded-xl bg-[#14171c]/90 border border-[#4a4a4a]/40 flex flex-col items-center justify-center p-1.5 md:p-2.5 text-center shadow-md flex-shrink-0 transition-all hover:border-[#6d8196]/60"
-              >
-                <span className="text-[8px] md:text-[9px] text-[#6d8196] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded-full bg-[#6d8196]/15 border border-[#6d8196]/30 mb-0.5 md:mb-1 leading-none">
-                  {partner.badge}
-                </span>
-                <span className="text-[11px] md:text-xs font-semibold text-[#FFFFE3] line-clamp-1 leading-tight">
-                  {partner.name}
-                </span>
-                <span className="text-[9px] md:text-[10px] text-[#cbcbcb]/60 line-clamp-1 leading-tight">
-                  {partner.category}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* ========================================================================= */}
       {/* 2. EXPLORE ALL THREE DEEP SERVICES (3 SERVICE CARDS) */}
@@ -522,9 +483,9 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
         id="founder-block-section"
         className="section-content-visibility py-12 md:py-16 px-5 sm:px-8 md:px-12 max-w-4xl mx-auto relative z-10 overflow-hidden"
       >
-        {/* Mobile Layout (<768px): Photo top max-width 280px centered rounded, tap for color, 4-line statement, centered name+role */}
+        {/* Mobile Layout (<768px): Photo top max-width 280px centered rounded, 4-line statement, centered name+role */}
         <div className="md:hidden glass-card rounded-2xl p-6 border border-[#4a4a4a]/50 flex flex-col items-center text-center shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
-          {/* Photo on top (max-width 280px, centered, rounded, tap to activate color) */}
+          {/* Photo on top (max-width 280px, centered, rounded) */}
           <div
             ref={founderContainerRef}
             onPointerDown={toggleFounderPhoto}
@@ -535,7 +496,7 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
                 : 'border-[#6d8196]/60 shadow-[0_0_25px_rgba(109,129,150,0.3)]'
             }`}
             role="button"
-            aria-label="Tap to view founder photo in color"
+            aria-label="Anas Shaikh — Founder & CEO"
           >
             {!founderImgError ? (
               <img
@@ -553,9 +514,6 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
                 AS
               </div>
             )}
-            <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md text-[10px] text-[#FFFFE3] border border-white/20">
-              {founderPhotoActive ? 'Color Active' : 'Tap for Color'}
-            </div>
           </div>
 
           {/* Statement below (max 4 lines) */}
