@@ -43,7 +43,7 @@ export default function DigitalCardPreview() {
           style={{ transformStyle: 'preserve-3d' }}
           onClick={() => setIsFlipped(!isFlipped)}
           role="button"
-          aria-label="Tap to flip card"
+          aria-label="Interactive digital visiting card"
         >
           {/* Front of Card */}
           <motion.div
@@ -88,9 +88,6 @@ export default function DigitalCardPreview() {
                 </h4>
                 <p className="font-sans text-[11px] text-[#6d8196]">Founder & CEO</p>
               </div>
-              <div className="font-tech text-[10px] text-[#cbcbcb]/40 tracking-widest uppercase">
-                TAP TO FLIP
-              </div>
             </div>
           </motion.div>
 
@@ -116,10 +113,6 @@ export default function DigitalCardPreview() {
                 <div className="font-sans text-xs text-[#cbcbcb]/70 mt-1">
                   {BRAND.phone}
                 </div>
-              </div>
-
-              <div className="font-tech text-[10px] text-[#cbcbcb]/50">
-                Tap to flip back
               </div>
             </div>
 
