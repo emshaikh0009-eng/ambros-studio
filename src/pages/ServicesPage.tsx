@@ -76,14 +76,14 @@ export default memo(function ServicesPage({ onNavigate }: ServicesPageProps) {
                     {service.description}
                   </p>
 
-                  {/* Quantitative Benchmarks */}
-                  <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[#4a4a4a]/30">
+                  {/* Quantitative Benchmarks: No overlap, min-width 0, wrapped labels, 22px values on mobile */}
+                  <div className="grid grid-cols-3 gap-3 pt-4 border-t border-[#4a4a4a]/30">
                     {service.metrics.map((m, idx) => (
-                      <div key={idx}>
-                        <div className="font-serif-luxury text-2xl sm:text-3xl text-[#FFFFE3]">
+                      <div key={idx} className="min-w-0" style={{ minWidth: 0 }}>
+                        <div className="font-serif-luxury text-[22px] sm:text-3xl text-[#FFFFE3] leading-none">
                           {m.value}
                         </div>
-                        <div className="font-tech text-[10px] uppercase text-[#cbcbcb]/60 tracking-wider mt-0.5">
+                        <div className="font-tech text-[10px] uppercase text-[#cbcbcb]/60 tracking-wider mt-1 break-words whitespace-normal leading-tight">
                           {m.label}
                         </div>
                       </div>
