@@ -55,7 +55,7 @@ export const SERVICES: ServiceItem[] = [
     title: 'Website Design & Development',
     tagline: 'Websites that don’t just look premium — they perform.',
     description:
-      'We craft bespoke, ultra-fast, SEO-optimized web flagships built for longevity. Every animation is intentional, every page load instantaneous, and every interaction sculpted to convert discerning visitors into lifetime customers.',
+      'Bespoke, ultra-fast web flagships engineered to captivate and convert. Built with clean architecture, fluid motion, and zero bloat.',
     deliverables: [
       'Bespoke Visual Direction & Design Systems',
       'Production-Grade React / Next.js Architecture',
@@ -77,7 +77,7 @@ export const SERVICES: ServiceItem[] = [
     title: 'Digital Ads Campaigns',
     tagline: 'Leads that actually convert — engineered, tested, scaled.',
     description:
-      'Meta (Facebook & Instagram) ad campaigns engineered not for vanity clicks, but for qualified high-ticket leads. We combine psychological copywriting, high-production ad creative, and algorithmic bid engineering to maximize your ROAS.',
+      'High-converting Meta ad funnels built for qualified, high-ticket leads. Precision creative, sharp copy, and measurable return on ad spend.',
     deliverables: [
       'Full Meta Advertising Funnel Architecture',
       'High-Converting UGC & Cinematic Creative Direction',
@@ -99,7 +99,7 @@ export const SERVICES: ServiceItem[] = [
     title: 'Digital Visiting Cards',
     tagline: 'Your first impression, reimagined for the digital age.',
     description:
-      'Replace disposable paper cards with interactive, tap-to-connect NFC & QR smart cards. Instant contact saving directly to smartphone address books, calendar booking links, portfolio highlights, and real-time tap analytics.',
+      'Tap-to-connect NFC smart cards that instantly save your contact info to any phone. Replaces paper visiting cards with effortless digital prestige.',
     deliverables: [
       'Matte Black & Slate-Blue Premium NFC Physical Hardware',
       'Interactive Digital Micro-Site with Custom Domain',
@@ -225,41 +225,6 @@ export const CASE_STUDIES: CaseStudy[] = [
     },
   },
   {
-    id: 'kite-legal',
-    title: 'Kite Legal',
-    client: 'Kite Legal Advocates & Solicitors',
-    category: 'Digital Card Suite + Identity',
-    tag: 'Digital Cards',
-    year: '2026',
-    image: '/assets/images/case_digital_cards.jpg',
-    width: 1920,
-    height: 1080,
-    altText: 'Kite Legal sleek matte black NFC smart visiting card on marble slate',
-    brief:
-      'A prestigious 40-attorney corporate law firm needed an executive, modern networking solution to replace outdated paper visiting cards at international arbitration conferences.',
-    approach:
-      'Engineered an enterprise suite of custom laser-engraved matte black metal NFC digital visiting cards with instant vCard synchronization, practice area brochures, and secure calendaring integration.',
-    outcome:
-      'Eliminated recurrent annual printing expenses, achieved a 96% direct contact save rate at networking summits, and standardized partner executive branding.',
-    stats: [
-      { value: '96%', label: 'Contact Save Rate' },
-      { value: '40+', label: 'Partner Cards Deployed' },
-      { value: '100%', label: 'Paper Cards Eliminated' },
-    ],
-    deliverables: [
-      'Custom Engraved NFC Metal Cards',
-      'Centralized Attorney Directory',
-      'Dynamic vCard Profiles',
-      'Instant Calendar Booking Integration',
-    ],
-    testimonial: {
-      quote:
-        'Our attorneys now leave a lasting high-tech impression at every global summit. One tap and clients have our direct details.',
-      author: 'Sameer Kothari',
-      role: 'Managing Partner, Kite Legal',
-    },
-  },
-  {
     id: 'atlas-fitness',
     title: 'Atlas Fitness',
     client: 'Atlas Performance Clubs',
@@ -326,7 +291,7 @@ export const TESTIMONIALS: Testimonial[] = [
     id: 't-3',
     client: 'Sameer Kothari',
     role: 'Managing Partner',
-    company: 'Kite Legal',
+    company: 'Kothari Legal Counsel',
     quote:
       'The NFC digital visiting cards transformed how our firm connects at overseas conferences. It projects absolute prestige. We will never purchase paper cards again.',
     rating: 5,
@@ -438,4 +403,3 @@ export const FAQS = [
       'Our physical cards contain embedded NFC chips. When tapped against any modern iPhone or Android, your branded digital profile opens instantly without requiring any app download.',
   },
 ];
-
