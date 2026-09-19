@@ -23,12 +23,12 @@ export default memo(function Footer({ onNavigate }: FooterProps) {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-[#6d8196]/40 to-transparent pointer-events-none" />
 
       {/* Main Footer Container */}
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 py-8 md:py-16">
+      <div className="max-w-7xl mx-auto px-0 md:px-12 py-4 md:py-16">
         {/* 3 Columns Layout: Desktop 3 cols; Mobile (<768px) stacks vertically in order: Strategic Partners → Connect with Ambros → Exploration */}
         <div className="flex flex-col md:grid md:grid-cols-3 gap-0 md:gap-8 lg:gap-12">
           
-          {/* COLUMN 1: Strategic Partners */}
-          <div className="py-6 md:py-0 border-b border-[#4a4a4a]/25 md:border-b-0 flex flex-col justify-start text-left">
+          {/* COLUMN 1: Strategic Partners (32px vertical, 24px horizontal padding on mobile) */}
+          <div className="py-8 px-6 md:py-0 md:px-0 border-b border-[#4a4a4a]/25 md:border-b-0 flex flex-col justify-start text-left">
             <h4 className="text-xs uppercase tracking-widest text-[#6d8196] font-semibold mb-4">
               Strategic Partners
             </h4>
@@ -54,15 +54,15 @@ export default memo(function Footer({ onNavigate }: FooterProps) {
             </ul>
           </div>
 
-          {/* COLUMN 2: Connect with Ambros */}
-          <div className="py-6 md:py-0 border-b border-[#4a4a4a]/25 md:border-b-0 flex flex-col justify-start text-left">
+          {/* COLUMN 2: Connect with Ambros (32px vertical, 24px horizontal padding on mobile) */}
+          <div className="py-8 px-6 md:py-0 md:px-0 border-b border-[#4a4a4a]/25 md:border-b-0 flex flex-col justify-start text-left">
             <h4 className="text-xs uppercase tracking-widest text-[#6d8196] font-semibold mb-4">
               Connect with Ambros
             </h4>
             <p className="text-xs text-[#cbcbcb]/70 mb-4">
               Follow our latest releases, insights, and behind-the-scenes engineering.
             </p>
-            {/* Social Icons — minimum 44x44px tap targets */}
+            {/* Social Icons — minimum 44x44px circular tap targets */}
             <div className="flex flex-wrap items-center gap-3">
               <a
                 href={BRAND.instagramUrl}
@@ -121,8 +121,8 @@ export default memo(function Footer({ onNavigate }: FooterProps) {
             </div>
           </div>
 
-          {/* COLUMN 3: Exploration */}
-          <div className="py-6 md:py-0 flex flex-col justify-start text-left">
+          {/* COLUMN 3: Exploration (32px vertical, 24px horizontal padding on mobile) */}
+          <div className="py-8 px-6 md:py-0 md:px-0 flex flex-col justify-start text-left">
             <h4 className="text-xs uppercase tracking-widest text-[#6d8196] font-semibold mb-3">
               Exploration
             </h4>
@@ -145,12 +145,12 @@ export default memo(function Footer({ onNavigate }: FooterProps) {
           </div>
         </div>
 
-        {/* Small Bottom Bar: Logo and copyright at the very bottom, centered on mobile */}
-        <div className="pt-8 mt-6 border-t border-[#4a4a4a]/40 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#cbcbcb]/60 text-center md:text-left">
-          <div className="order-2 md:order-1">
+        {/* Small Bottom Bar: Logo and copyright centered at very bottom on mobile */}
+        <div className="pt-8 mt-6 px-6 md:px-0 border-t border-[#4a4a4a]/40 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#cbcbcb]/60 text-center md:text-left">
+          <div className="order-2 md:order-1 w-full md:w-auto text-center md:text-left">
             © 2025 AmbrosStudio. Crafted With Purpose.
           </div>
-          <div className="order-1 md:order-2 flex items-center justify-center">
+          <div className="order-1 md:order-2 flex items-center justify-center w-full md:w-auto">
             <AmbrosLogo size="sm" showTagline={false} />
           </div>
         </div>
