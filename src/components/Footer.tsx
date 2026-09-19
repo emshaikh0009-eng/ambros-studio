@@ -113,6 +113,12 @@ export default memo(function Footer({ onNavigate }: FooterProps) {
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
             </div>
+
+            <div className="pt-2">
+              <p className="text-xs text-[#cbcbcb]/70 leading-relaxed">
+                214, VIP Galleria, Alpha Bazar, Althan, Surat, Gujarat – 395017
+              </p>
+            </div>
           </div>
 
           {/* COLUMN 3: Exploration */}
