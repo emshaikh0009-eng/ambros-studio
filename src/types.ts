@@ -31,6 +31,8 @@ export interface CaseStudy {
   year: string;
   image: string;
   altText: string;
+  width?: number;
+  height?: number;
   brief: string;
   approach: string;
   outcome: string;
