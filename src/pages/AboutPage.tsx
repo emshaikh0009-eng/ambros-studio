@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { MessageCircle, Instagram, Facebook, Twitter, ShieldCheck, Users } from 'lucide-react';
 import { BRAND, PARTNERS, TEAM_SPECIALISTS } from '../data/agencyData';
@@ -11,6 +11,32 @@ interface AboutPageProps {
 
 export default memo(function AboutPage({ onNavigate }: AboutPageProps) {
   const [imageError, setImageError] = useState(false);
+  const [founderActive, setFounderActive] = useState(false);
+  const founderContainerRef = useRef<HTMLDivElement>(null);
+  const lastTapRef = useRef(0);
+
+  useEffect(() => {
+    if (!founderActive) return;
+    const handleOutside = (e: MouseEvent | TouchEvent | PointerEvent) => {
+      if (founderContainerRef.current && !founderContainerRef.current.contains(e.target as Node)) {
+        setFounderActive(false);
+      }
+    };
+    window.addEventListener('pointerdown', handleOutside);
+    window.addEventListener('touchstart', handleOutside);
+    return () => {
+      window.removeEventListener('pointerdown', handleOutside);
+      window.removeEventListener('touchstart', handleOutside);
+    };
+  }, [founderActive]);
+
+  const handleFounderToggle = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    const now = Date.now();
+    if (now - lastTapRef.current < 300) return;
+    lastTapRef.current = now;
+    setFounderActive((prev) => !prev);
+  };
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#cbcbcb] pt-32 pb-24 overflow-hidden">
       {/* Background ambient lighting */}
@@ -46,7 +72,16 @@ export default memo(function AboutPage({ onNavigate }: AboutPageProps) {
             {/* Subtle slate-blue border glow and soft grain overlay */}
             <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-[#6d8196]/40 via-[#4a4a4a]/20 to-[#FFFFE3]/20 blur-lg opacity-70 group-hover:opacity-100 transition-opacity duration-700" />
 
-            <div className="relative rounded-2xl overflow-hidden border border-[#6d8196]/40 bg-[#181a1d] shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
+            <div
+              ref={founderContainerRef}
+              onPointerDown={handleFounderToggle}
+              onTouchStart={handleFounderToggle}
+              className={`relative rounded-2xl overflow-hidden border bg-[#181a1d] cursor-pointer transition-all duration-700 ${
+                founderActive
+                  ? 'is-active glow-on-active border-[#6d8196] shadow-[0_20px_60px_rgba(109,129,150,0.5)]'
+                  : 'border-[#6d8196]/40 shadow-[0_20px_60px_rgba(0,0,0,0.8)]'
+              }`}
+            >
               {!imageError ? (
                 <>
                   <img
@@ -57,7 +92,9 @@ export default memo(function AboutPage({ onNavigate }: AboutPageProps) {
                     loading="lazy"
                     decoding="async"
                     onError={() => setImageError(true)}
-                    className="w-full h-[520px] object-cover object-center grayscale contrast-105 group-hover:grayscale-0 transition-all duration-700"
+                    className={`w-full h-[520px] object-cover object-center contrast-105 group-hover:grayscale-0 transition-all duration-700 ${
+                      founderActive ? 'grayscale-0' : 'grayscale'
+                    }`}
                   />
 
                   {/* Soft grain overlay */}
