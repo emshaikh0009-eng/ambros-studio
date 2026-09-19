@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, MessageCircle, Layers, TrendingUp, CreditCard, Sparkles, Compass, Palette, Rocket } from 'lucide-react';
 import ThreeHeroCanvas from '../components/ThreeHeroCanvas';
@@ -17,6 +17,17 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
   const [scrollY, setScrollY] = useState(0);
   const [founderImgError, setFounderImgError] = useState(false);
   const [founderPhotoActive, setFounderPhotoActive] = useState(false);
+  const founderContainerRef = useRef<HTMLDivElement>(null);
+  const desktopFounderRef = useRef<HTMLDivElement>(null);
+  const lastFounderTapRef = useRef(0);
+
+  const toggleFounderPhoto = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    const now = Date.now();
+    if (now - lastFounderTapRef.current < 300) return;
+    lastFounderTapRef.current = now;
+    setFounderPhotoActive((prev) => !prev);
+  };
 
   // Throttled scroll listener via requestAnimationFrame
   useEffect(() => {
@@ -34,6 +45,27 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Dismiss active founder photo on outside tap
+  useEffect(() => {
+    if (!founderPhotoActive) return;
+    const handleOutside = (e: MouseEvent | TouchEvent | PointerEvent) => {
+      if (
+        founderContainerRef.current &&
+        !founderContainerRef.current.contains(e.target as Node) &&
+        desktopFounderRef.current &&
+        !desktopFounderRef.current.contains(e.target as Node)
+      ) {
+        setFounderPhotoActive(false);
+      }
+    };
+    window.addEventListener('pointerdown', handleOutside);
+    window.addEventListener('touchstart', handleOutside);
+    return () => {
+      window.removeEventListener('pointerdown', handleOutside);
+      window.removeEventListener('touchstart', handleOutside);
+    };
+  }, [founderPhotoActive]);
+
   const getServiceIcon = (id: string) => {
     switch (id) {
       case 'web-development':
@@ -47,11 +79,11 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
     }
   };
 
-  // 1-line descriptions for service cards
+  // Precise 2-line descriptions for service cards
   const serviceSummaries: Record<string, string> = {
-    'web-development': 'Bespoke, high-speed websites engineered to captivate visitors and convert them into clients.',
-    'digital-ads': 'Targeted Meta campaigns built for qualified, high-ticket leads and measurable ROAS.',
-    'digital-visiting-cards': 'Tap-to-connect NFC smart cards that instantly save your contact details to any phone.',
+    'web-development': 'Bespoke, ultra-fast web flagships engineered to captivate and convert. Built with clean architecture, fluid motion, and zero bloat.',
+    'digital-ads': 'High-converting Meta ad funnels built for qualified, high-ticket leads. Precision creative, sharp copy, and measurable return on ad spend.',
+    'digital-visiting-cards': 'Tap-to-connect NFC smart cards that instantly save your contact info to any phone. Replaces paper visiting cards with effortless digital prestige.',
   };
 
   // 3 steps (Discover → Design → Deliver). One line each.
@@ -214,41 +246,43 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. TRUST / PARTNER STRIP (MOBILE ONLY < 768px: 1.5 items snap, 140x80px) */}
+      {/* 3. TRUST / PARTNER STRIP (Mobile: 120x60px, Desktop: 160x80px) */}
       {/* ========================================================================= */}
       <section
-        id="mobile-trust-partners-strip"
-        className="md:hidden py-6 px-5 overflow-hidden border-b border-[#4a4a4a]/25 bg-[#0e1013]/60"
+        id="trust-partners-strip"
+        className="py-5 sm:py-6 px-4 sm:px-6 md:px-12 overflow-hidden border-b border-[#4a4a4a]/25 bg-[#0e1013]/60"
         aria-label="Strategic Partners"
       >
-        <div className="flex items-center justify-between mb-3 px-1">
-          <span className="font-tech text-[11px] uppercase tracking-[0.1em] text-[#6d8196] font-semibold">
-            Strategic Partners
-          </span>
-          <span className="font-tech text-[10px] text-[#cbcbcb]/50">
-            Swipe →
-          </span>
-        </div>
-        <div
-          className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {PARTNERS.map((partner, idx) => (
-            <div
-              key={idx}
-              className="w-[140px] min-w-[140px] h-[80px] snap-center rounded-xl bg-[#14171c]/90 border border-[#4a4a4a]/40 flex flex-col items-center justify-center p-2.5 text-center shadow-md flex-shrink-0"
-            >
-              <span className="text-[9px] text-[#6d8196] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-[#6d8196]/15 border border-[#6d8196]/30 mb-1">
-                {partner.badge}
-              </span>
-              <span className="text-xs font-semibold text-[#FFFFE3] line-clamp-1">
-                {partner.name}
-              </span>
-              <span className="text-[10px] text-[#cbcbcb]/60 line-clamp-1">
-                {partner.category}
-              </span>
-            </div>
-          ))}
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between md:justify-center md:gap-4 mb-3 px-1">
+            <span className="font-tech text-[10px] sm:text-[11px] uppercase tracking-[0.1em] text-[#6d8196] font-semibold">
+              Strategic Partners
+            </span>
+            <span className="font-tech text-[9px] sm:text-[10px] text-[#cbcbcb]/50 md:hidden">
+              Swipe →
+            </span>
+          </div>
+          <div
+            className="flex gap-2.5 sm:gap-3 overflow-x-auto md:overflow-x-visible md:justify-center md:flex-wrap pb-2 md:pb-0 scrollbar-none snap-x snap-mandatory"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {PARTNERS.map((partner, idx) => (
+              <div
+                key={idx}
+                className="w-[120px] min-w-[120px] h-[60px] md:w-[160px] md:min-w-[160px] md:h-[80px] snap-center rounded-xl bg-[#14171c]/90 border border-[#4a4a4a]/40 flex flex-col items-center justify-center p-1.5 md:p-2.5 text-center shadow-md flex-shrink-0 transition-all hover:border-[#6d8196]/60"
+              >
+                <span className="text-[8px] md:text-[9px] text-[#6d8196] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded-full bg-[#6d8196]/15 border border-[#6d8196]/30 mb-0.5 md:mb-1 leading-none">
+                  {partner.badge}
+                </span>
+                <span className="text-[11px] md:text-xs font-semibold text-[#FFFFE3] line-clamp-1 leading-tight">
+                  {partner.name}
+                </span>
+                <span className="text-[9px] md:text-[10px] text-[#cbcbcb]/60 line-clamp-1 leading-tight">
+                  {partner.category}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -492,8 +526,14 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
         <div className="md:hidden glass-card rounded-2xl p-6 border border-[#4a4a4a]/50 flex flex-col items-center text-center shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
           {/* Photo on top (max-width 280px, centered, rounded, tap to activate color) */}
           <div
-            onClick={() => setFounderPhotoActive(!founderPhotoActive)}
-            className="w-full max-w-[280px] aspect-square rounded-2xl overflow-hidden border-2 border-[#6d8196]/60 bg-[#181a1d] shadow-[0_0_25px_rgba(109,129,150,0.3)] cursor-pointer relative mb-5 active:scale-[0.98] transition-transform"
+            ref={founderContainerRef}
+            onPointerDown={toggleFounderPhoto}
+            onTouchStart={toggleFounderPhoto}
+            className={`w-full max-w-[280px] aspect-square rounded-2xl overflow-hidden border-2 bg-[#181a1d] cursor-pointer relative mb-5 active:scale-[0.98] transition-all duration-500 ${
+              founderPhotoActive
+                ? 'is-active glow-on-active border-[#6d8196] shadow-[0_0_35px_rgba(109,129,150,0.6)]'
+                : 'border-[#6d8196]/60 shadow-[0_0_25px_rgba(109,129,150,0.3)]'
+            }`}
             role="button"
             aria-label="Tap to view founder photo in color"
           >
@@ -536,7 +576,16 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
         <div className="hidden md:flex glass-card rounded-2xl p-6 sm:p-8 border border-[#4a4a4a]/50 flex-row items-center gap-6 sm:gap-8 shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
           {/* Founder Photo */}
           <div className="relative flex-shrink-0">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border border-[#6d8196]/50 bg-[#181a1d] shadow-[0_0_20px_rgba(109,129,150,0.25)] flex items-center justify-center">
+            <div
+              ref={desktopFounderRef}
+              onPointerDown={toggleFounderPhoto}
+              onTouchStart={toggleFounderPhoto}
+              className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border bg-[#181a1d] flex items-center justify-center cursor-pointer transition-all duration-500 ${
+                founderPhotoActive
+                  ? 'is-active glow-on-active border-[#6d8196] shadow-[0_0_30px_rgba(109,129,150,0.6)]'
+                  : 'border-[#6d8196]/50 shadow-[0_0_20px_rgba(109,129,150,0.25)]'
+              }`}
+            >
               {!founderImgError ? (
                 <img
                   src="/founder.jpg"
@@ -544,7 +593,9 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
                   width={96}
                   height={96}
                   onError={() => setFounderImgError(true)}
-                  className="w-full h-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-500"
+                  className={`w-full h-full object-cover object-top transition-all duration-500 ${
+                    founderPhotoActive ? 'grayscale-0' : 'grayscale hover:grayscale-0'
+                  }`}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center font-bold text-xl text-[#FFFFE3] bg-gradient-to-br from-[#1f2b38] to-[#0a0a0a]">
