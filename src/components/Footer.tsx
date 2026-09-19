@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { PageId } from '../types';
 import { BRAND, PARTNERS } from '../data/agencyData';
-import { ArrowUpRight, MessageCircle, Instagram, Facebook, Twitter, ShieldCheck } from 'lucide-react';
+import { ArrowUpRight, MessageCircle, Instagram, Facebook, Twitter } from 'lucide-react';
 import AmbrosLogo from './AmbrosLogo';
 
 interface FooterProps {
@@ -9,207 +9,143 @@ interface FooterProps {
 }
 
 export default memo(function Footer({ onNavigate }: FooterProps) {
+  const explorationLinks: { id: PageId; label: string }[] = [
+    { id: 'home', label: 'Home' },
+    { id: 'about', label: 'About' },
+    { id: 'services', label: 'Services' },
+    { id: 'work', label: 'Work' },
+    { id: 'contact', label: 'Contact' },
+  ];
+
   return (
-    <footer id="ambros-main-footer" className="section-content-visibility bg-[#0a0a0a] border-t border-[#4a4a4a]/40 relative overflow-hidden">
-      {/* Subtle top glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-[#6d8196]/50 to-transparent" />
+    <footer id="ambros-main-footer" className="section-content-visibility bg-[#0a0a0a] border-t border-[#4a4a4a]/40 relative overflow-hidden w-full max-w-full">
+      {/* Subtle top glow line */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-[#6d8196]/40 to-transparent pointer-events-none" />
 
-      {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
-          {/* Brand Col (5 cols) */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="flex flex-col items-start">
-              <button
-                type="button"
-                onClick={() => {
-                  onNavigate('home');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="text-left focus:outline-none"
+      {/* Main Footer Container */}
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 py-8 md:py-16">
+        {/* 3 Columns Layout: Desktop 3 cols; Mobile (<768px) stacks vertically in order: Strategic Partners → Connect with Ambros → Exploration */}
+        <div className="flex flex-col md:grid md:grid-cols-3 gap-0 md:gap-8 lg:gap-12">
+          
+          {/* COLUMN 1: Strategic Partners */}
+          <div className="py-6 md:py-0 border-b border-[#4a4a4a]/25 md:border-b-0 flex flex-col justify-start text-left">
+            <h4 className="text-xs uppercase tracking-widest text-[#6d8196] font-semibold mb-4">
+              Strategic Partners
+            </h4>
+            <ul className="space-y-3 w-full">
+              {PARTNERS.map((partner, idx) => (
+                <li
+                  key={idx}
+                  className="p-3.5 rounded-xl bg-[#14171c]/80 border border-[#4a4a4a]/40 hover:border-[#6d8196]/50 transition-colors"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold text-[#FFFFE3]">
+                      {partner.name}
+                    </span>
+                    <span className="text-[10px] text-[#6d8196] uppercase tracking-wider font-medium px-2 py-0.5 rounded-full bg-[#6d8196]/15 border border-[#6d8196]/30">
+                      {partner.badge}
+                    </span>
+                  </div>
+                  <p className="text-[#cbcbcb]/70 text-xs mt-1">
+                    {partner.category}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* COLUMN 2: Connect with Ambros */}
+          <div className="py-6 md:py-0 border-b border-[#4a4a4a]/25 md:border-b-0 flex flex-col justify-start text-left">
+            <h4 className="text-xs uppercase tracking-widest text-[#6d8196] font-semibold mb-4">
+              Connect with Ambros
+            </h4>
+            <p className="text-xs text-[#cbcbcb]/70 mb-4">
+              Follow our latest releases, insights, and behind-the-scenes engineering.
+            </p>
+            {/* Social Icons — minimum 44x44px tap targets */}
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href={BRAND.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full border border-[#4a4a4a] hover:border-[#6d8196] bg-[#181a1d] text-[#cbcbcb] hover:text-[#FFFFE3] flex items-center justify-center transition-all hover:scale-105 shadow-sm"
               >
-                <AmbrosLogo size="md" showTagline={true} />
-              </button>
-            </div>
-
-            <p className="font-tech text-xs uppercase tracking-widest text-[#6d8196]">
-              {BRAND.tagline}
-            </p>
-
-            {/* Verbatim Mission copy */}
-            <p className="font-sans text-sm text-[#cbcbcb]/90 leading-relaxed max-w-md">
-              &ldquo;{BRAND.mission}&rdquo;
-            </p>
-
-            {/* Direct WhatsApp Quick Chat */}
-            <div className="pt-2">
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a
+                href={BRAND.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full border border-[#4a4a4a] hover:border-[#6d8196] bg-[#181a1d] text-[#cbcbcb] hover:text-[#FFFFE3] flex items-center justify-center transition-all hover:scale-105 shadow-sm"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a
+                href={BRAND.twitterUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="X Twitter"
+                className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full border border-[#4a4a4a] hover:border-[#6d8196] bg-[#181a1d] text-[#cbcbcb] hover:text-[#FFFFE3] flex items-center justify-center transition-all hover:scale-105 shadow-sm"
+              >
+                <Twitter className="w-5 h-5" />
+              </a>
               <a
                 href={BRAND.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-tech text-xs uppercase tracking-wider font-semibold px-5 py-3 rounded-full bg-[#6d8196] text-[#FFFFE3] hover:bg-[#5b6f84] hover:shadow-[0_0_25px_rgba(109,129,150,0.5)] transition-all"
-                id="footer-whatsapp-cta"
+                aria-label="WhatsApp Direct"
+                className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full border border-[#6d8196]/60 bg-[#6d8196]/20 text-[#FFFFE3] hover:bg-[#6d8196]/30 flex items-center justify-center transition-all hover:scale-105 shadow-sm"
               >
-                <MessageCircle className="w-4 h-4" />
-                <span>Chat on WhatsApp ({BRAND.phone})</span>
+                <MessageCircle className="w-5 h-5" />
+              </a>
+            </div>
+
+            <div className="pt-4">
+              <a
+                href={BRAND.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="min-h-[44px] inline-flex items-center gap-2 text-xs uppercase tracking-wider font-semibold text-[#6d8196] hover:text-[#FFFFE3] transition-colors py-2"
+              >
+                <span>Direct WhatsApp: {BRAND.phone}</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
 
-          {/* Navigation Links (3 cols) */}
-          <div className="lg:col-span-3 space-y-4">
-            <h4 className="font-tech text-xs uppercase tracking-widest text-[#6d8196]">
+          {/* COLUMN 3: Exploration */}
+          <div className="py-6 md:py-0 flex flex-col justify-start text-left">
+            <h4 className="text-xs uppercase tracking-widest text-[#6d8196] font-semibold mb-3">
               Exploration
             </h4>
-            <ul className="space-y-3 font-sans text-sm">
-              <li>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onNavigate('home');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="text-[#cbcbcb] hover:text-[#FFFFE3] transition-colors"
-                >
-                  Home Flagship
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onNavigate('about');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="text-[#cbcbcb] hover:text-[#FFFFE3] transition-colors"
-                >
-                  About & Founder (Anas Shaikh)
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onNavigate('services');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="text-[#cbcbcb] hover:text-[#FFFFE3] transition-colors"
-                >
-                  Core Capabilities
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onNavigate('work');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="text-[#cbcbcb] hover:text-[#FFFFE3] transition-colors"
-                >
-                  Portfolio & Case Studies
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onNavigate('contact');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="text-[#cbcbcb] hover:text-[#FFFFE3] transition-colors"
-                >
-                  Direct Contact & Inquiries
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Strategic Partners & Socials (4 cols) */}
-          <div className="lg:col-span-4 space-y-6">
-            <div>
-              <h4 className="font-tech text-xs uppercase tracking-widest text-[#6d8196] mb-3 flex items-center gap-2">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Strategic Partners & Allies</span>
-              </h4>
-              <ul className="space-y-2.5 font-sans text-xs">
-                {PARTNERS.map((partner, idx) => (
-                  <li
-                    key={idx}
-                    className="p-3 rounded-lg bg-[#181a1d]/60 border border-[#4a4a4a]/40 flex flex-col justify-between"
+            <ul className="flex flex-col space-y-1">
+              {explorationLinks.map((link) => (
+                <li key={link.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onNavigate(link.id);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="min-h-[44px] w-full text-left py-2.5 text-sm text-[#cbcbcb] hover:text-[#FFFFE3] transition-colors flex items-center"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="font-tech font-semibold text-[#FFFFE3]">
-                        {partner.name}
-                      </span>
-                      <span className="font-tech text-[10px] text-[#6d8196] uppercase tracking-wider">
-                        {partner.badge}
-                      </span>
-                    </div>
-                    <span className="text-[#cbcbcb]/70 text-[11px] mt-0.5">
-                      {partner.category}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Social Icons */}
-            <div className="pt-2">
-              <span className="font-tech text-xs uppercase tracking-widest text-[#cbcbcb]/60 block mb-3">
-                Connect With Ambros
-              </span>
-              <div className="flex items-center gap-3">
-                <a
-                  href={BRAND.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="w-10 h-10 rounded-full border border-[#4a4a4a] hover:border-[#6d8196] bg-[#181a1d] text-[#cbcbcb] hover:text-[#FFFFE3] flex items-center justify-center transition-all hover:scale-105 hover:shadow-[0_0_15px_rgba(109,129,150,0.4)]"
-                >
-                  <Instagram className="w-4 h-4" />
-                </a>
-                <a
-                  href={BRAND.facebookUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook"
-                  className="w-10 h-10 rounded-full border border-[#4a4a4a] hover:border-[#6d8196] bg-[#181a1d] text-[#cbcbcb] hover:text-[#FFFFE3] flex items-center justify-center transition-all hover:scale-105 hover:shadow-[0_0_15px_rgba(109,129,150,0.4)]"
-                >
-                  <Facebook className="w-4 h-4" />
-                </a>
-                <a
-                  href={BRAND.twitterUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="X Twitter"
-                  className="w-10 h-10 rounded-full border border-[#4a4a4a] hover:border-[#6d8196] bg-[#181a1d] text-[#cbcbcb] hover:text-[#FFFFE3] flex items-center justify-center transition-all hover:scale-105 hover:shadow-[0_0_15px_rgba(109,129,150,0.4)]"
-                >
-                  <Twitter className="w-4 h-4" />
-                </a>
-                <a
-                  href={BRAND.whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="WhatsApp Direct"
-                  className="w-10 h-10 rounded-full border border-[#6d8196]/60 bg-[#6d8196]/20 text-[#FFFFE3] flex items-center justify-center transition-all hover:scale-105 hover:shadow-[0_0_15px_rgba(109,129,150,0.6)]"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
+                    <span>{link.label}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-12 mt-12 border-t border-[#4a4a4a]/40 flex flex-col sm:flex-row items-center justify-between gap-4 font-tech text-xs text-[#cbcbcb]/60">
-          <div>
-            © {new Date().getFullYear()} AmbrosStudio. All Rights Reserved. Crafted With Purpose.
+        {/* Small Bottom Bar: Logo and copyright at the very bottom, centered on mobile */}
+        <div className="pt-8 mt-6 border-t border-[#4a4a4a]/40 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#cbcbcb]/60 text-center md:text-left">
+          <div className="order-2 md:order-1">
+            © 2025 AmbrosStudio. Crafted With Purpose.
           </div>
-          <div className="flex items-center gap-6">
-            <span>Founder & CEO: Anas Shaikh</span>
-            <span>{BRAND.location}</span>
+          <div className="order-1 md:order-2 flex items-center justify-center">
+            <AmbrosLogo size="sm" showTagline={false} />
           </div>
         </div>
       </div>
