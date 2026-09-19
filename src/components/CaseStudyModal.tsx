@@ -58,6 +58,11 @@ export default memo(function CaseStudyModal({ caseStudy, onClose }: CaseStudyMod
             <div className="relative w-full h-64 md:h-96 rounded-xl overflow-hidden border border-[#4a4a4a]/60 group">
               <CaseStudyVisual
                 title={caseStudy.title}
+                image={caseStudy.image}
+                altText={caseStudy.altText}
+                imageAlt={caseStudy.altText}
+                width={caseStudy.width}
+                height={caseStudy.height}
                 eyebrow={caseStudy.tag}
                 category={caseStudy.category}
                 deliverables={caseStudy.deliverables}
