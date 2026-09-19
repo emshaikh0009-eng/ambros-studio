@@ -369,8 +369,8 @@ export default memo(function ThreeHeroCanvas({
         <div className="absolute inset-0 bg-gradient-to-b from-[#12161c]/50 via-[#0a0a0a] to-[#0a0a0a]" />
         <div className="absolute w-[320px] h-[320px] rounded-full bg-radial from-[#6d8196]/15 via-[#00a2ff]/05 to-transparent blur-3xl opacity-60" />
 
-        {/* Ambient Ambros Logo watermark in background */}
-        <div className="relative opacity-20 transform scale-110 select-none">
+        {/* Ambient Ambros Logo watermark in background — hidden on mobile (<768px) to prevent hero text overlap */}
+        <div className="hidden md:block relative opacity-20 transform scale-110 select-none">
           <AmbrosLogo size="xl" showTagline={false} />
         </div>
       </div>
