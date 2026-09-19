@@ -131,12 +131,14 @@ body,
   }
 }
 
-/* Readable typography and no clipping at 375px */
+/* Hero headline sizing: clamp(2rem, 6vw, 4.5rem) on all devices */
+.hero-headline {
+  font-size: clamp(2rem, 6vw, 4.5rem) !important;
+  line-height: 1.08 !important;
+}
+
+/* Readable typography and no clipping on small mobile */
 @media (max-width: 420px) {
-  .hero-headline {
-    font-size: clamp(2.6rem, 11.5vw, 3.75rem) !important;
-    line-height: 1.02 !important;
-  }
   .section-headline {
     font-size: clamp(1.85rem, 8.5vw, 2.5rem) !important;
     line-height: 1.12 !important;
