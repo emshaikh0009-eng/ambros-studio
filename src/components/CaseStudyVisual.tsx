@@ -1,165 +1,136 @@
 import { memo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { X, ArrowUpRight, CheckCircle2, TrendingUp, Sparkles, MessageCircle } from 'lucide-react';
-import { CaseStudy } from '../types';
-import { BRAND } from '../data/agencyData';
-import CaseStudyVisual from './CaseStudyVisual';
 
-interface CaseStudyModalProps {
-  caseStudy: CaseStudy | null;
-  onClose: () => void;
+interface CaseStudyVisualProps {
+  title: string;
+  image?: string;
+  altText?: string;
+  imageAlt?: string;
+  width?: number;
+  height?: number;
+  eyebrow?: string;
+  tag?: string;
+  category?: string;
+  deliverables?: string[];
+  className?: string;
+  size?: 'card' | 'modal' | 'large';
 }
 
-export default memo(function CaseStudyModal({ caseStudy, onClose }: CaseStudyModalProps) {
-  if (!caseStudy) return null;
+export default memo(function CaseStudyVisual({
+  title,
+  image,
+  altText,
+  imageAlt,
+  width = 1200,
+  height = 800,
+  eyebrow = 'CASE STUDY',
+  tag,
+  category,
+  deliverables,
+  className = '',
+  size = 'card',
+}: CaseStudyVisualProps) {
+  const resolvedAlt = altText || imageAlt || title;
+  console.log('CaseStudyVisual', { image, altText: resolvedAlt, width, height });
+  const isModal = size === 'modal';
 
   return (
-    <AnimatePresence>
+    <div
+      className={`relative w-full h-full overflow-hidden flex flex-col items-center justify-center text-center select-none ${className}`}
+      style={{
+        background: 'linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%)',
+      }}
+    >
+      {/* Corner Slate-Blue Radial Glow with subtle hover shift (base background glow) */}
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/80 backdrop-blur-md overflow-y-auto"
-        onClick={onClose}
-      >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] },
-          }}
-          exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-4xl bg-[#0e1014] border border-[#4a4a4a] rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.8)] overflow-hidden my-auto max-h-[90vh] flex flex-col will-change-transform"
+        className="absolute inset-0 pointer-events-none transition-transform duration-700 ease-out group-hover:scale-110 group-hover:translate-x-2 group-hover:-translate-y-2 z-0"
+        style={{
+          background: 'radial-gradient(circle at 30% 20%, rgba(109, 129, 150, 0.25), transparent 60%)',
+        }}
+      />
+
+      {/* Subtle Grid Overlay (5% opacity repeating grid lines) */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-100 z-0"
+        style={{
+          backgroundImage: `
+            repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 1px, transparent 1px, transparent 24px),
+            repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 1px, transparent 1px, transparent 24px)
+          `,
+        }}
+      />
+
+      {/* Real Image Tag: unconditionally rendered, sits behind title text, grayscale hover effect */}
+      <img
+        src={image}
+        alt={resolvedAlt}
+        loading="lazy"
+        decoding="async"
+        width={width}
+        height={height}
+        className="absolute inset-0 w-full h-full object-cover grayscale contrast-105 group-hover:grayscale-0 group-active:grayscale-0 transition-all duration-700 ease-out group-hover:scale-105 z-0"
+        onError={(e) => {
+          e.currentTarget.style.display = 'none';
+        }}
+      />
+
+      {/* Soft grain overlay */}
+      <div className="absolute inset-0 bg-grain pointer-events-none opacity-30 z-[1]" />
+
+      {/* Subtle dark overlay / vignette to ensure text stays readable on top of image */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/90 via-[#0a0a0a]/40 to-[#0a0a0a]/30 pointer-events-none z-[1]" />
+
+      {/* Title, category, eyebrow text sitting on top with relative z-10 */}
+      <div className="relative z-10 px-6 py-8 flex flex-col items-center justify-center max-w-lg transition-transform duration-500 group-hover:scale-[1.02]">
+        {/* Small uppercase eyebrow label */}
+        <div className="inline-flex items-center gap-2 mb-3">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#6d8196] shadow-[0_0_8px_#6d8196]" />
+          <span className="font-tech text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#6d8196] font-semibold">
+            {eyebrow}
+          </span>
+          {category && !isModal && (
+            <>
+              <span className="text-[#4a4a4a]">·</span>
+              <span className="font-tech text-[10px] uppercase tracking-wider text-[#cbcbcb]/60 hidden sm:inline">
+                {category}
+              </span>
+            </>
+          )}
+        </div>
+
+        {/* Project Title in large serif font, cream color #FFFFE3 with soft glow hover */}
+        <h3
+          className={`font-serif-luxury text-[#FFFFE3] leading-[1.08] tracking-tight transition-all duration-500 group-hover:text-white group-hover:drop-shadow-[0_0_25px_rgba(255,255,227,0.55)] ${
+            isModal
+              ? 'text-3xl sm:text-4xl md:text-5xl max-w-xl'
+              : 'text-2xl sm:text-3xl md:text-4xl'
+          }`}
         >
-          {/* Header Bar */}
-          <div className="flex items-center justify-between p-6 border-b border-[#4a4a4a]/40 bg-[#0a0a0a]/60 backdrop-blur-sm sticky top-0 z-20">
-            <div>
-              <span className="font-tech text-xs uppercase tracking-widest text-[#6d8196]">
-                {caseStudy.tag} · {caseStudy.year}
-              </span>
-              <h2 className="font-serif-luxury text-2xl md:text-3xl text-[#FFFFE3]">
-                {caseStudy.title}
-              </h2>
-            </div>
-
-            <button
-              type="button"
-              onClick={onClose}
-              className="p-2 rounded-full border border-[#4a4a4a] hover:border-[#6d8196] bg-[#181a1d] text-[#cbcbcb] hover:text-[#FFFFE3] transition-colors"
-              aria-label="Close Case Study"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Body Content */}
-          <div className="p-6 md:p-10 overflow-y-auto space-y-10">
-            {/* Visual Header CSS Design with subtle dark gradient, slate-blue radial glow, and grid overlay */}
-            <div className="relative w-full h-64 md:h-96 rounded-xl overflow-hidden border border-[#4a4a4a]/60 group">
-              <CaseStudyVisual
-                title={caseStudy.title}
-                image={caseStudy.image}
-                altText={caseStudy.altText}
-                imageAlt={caseStudy.altText}
-                width={caseStudy.width}
-                height={caseStudy.height}
-                eyebrow={caseStudy.tag}
-                category={caseStudy.category}
-                deliverables={caseStudy.deliverables}
-                size="modal"
-              />
-            </div>
-
-            {/* Performance Stats Bento */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {caseStudy.stats.map((stat, idx) => (
-                <div
-                  key={idx}
-                  className="p-5 rounded-xl bg-[#181a1d]/70 border border-[#4a4a4a]/40 flex flex-col justify-center"
-                >
-                  <div className="flex items-center gap-2 text-[#6d8196] mb-1">
-                    <TrendingUp className="w-4 h-4" />
-                    <span className="font-tech text-xs uppercase tracking-wider text-[#cbcbcb]/70">
-                      Metric 0{idx + 1}
-                    </span>
-                  </div>
-                  <div className="font-serif-luxury text-3xl md:text-4xl text-[#FFFFE3] font-normal">
-                    {stat.value}
-                  </div>
-                  <div className="font-sans text-xs text-[#cbcbcb]/80 mt-1">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Editorial 3-Column Narrative: Brief, Approach, Outcome */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4 border-t border-[#4a4a4a]/30">
-              <div>
-                <h3 className="font-tech text-xs uppercase tracking-widest text-[#6d8196] mb-3 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#6d8196]" />
-                  The Brief
-                </h3>
-                <p className="font-sans text-sm text-[#cbcbcb] leading-relaxed">
-                  {caseStudy.brief}
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-tech text-xs uppercase tracking-widest text-[#6d8196] mb-3 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#6d8196]" />
-                  The Approach
-                </h3>
-                <p className="font-sans text-sm text-[#cbcbcb] leading-relaxed">
-                  {caseStudy.approach}
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-tech text-xs uppercase tracking-widest text-[#6d8196] mb-3 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFFFE3]" />
-                  The Outcome
-                </h3>
-                <p className="font-sans text-sm text-[#FFFFE3] leading-relaxed">
-                  {caseStudy.outcome}
-                </p>
-              </div>
-            </div>
-
-            {/* Testimonial Quote if available */}
-            {caseStudy.testimonial && (
-              <div className="p-6 rounded-xl bg-radial from-[#6d8196]/10 to-[#181a1d] border border-[#6d8196]/30">
-                <p className="font-serif-luxury italic text-lg md:text-xl text-[#FFFFE3]">
-                  &ldquo;{caseStudy.testimonial.quote}&rdquo;
-                </p>
-                <div className="mt-3 font-tech text-xs text-[#cbcbcb]">
-                  — {caseStudy.testimonial.author},{' '}
-                  <span className="text-[#6d8196]">{caseStudy.testimonial.role}</span>
-                </div>
-              </div>
-            )}
-
-            {/* Footer Action */}
-            <div className="pt-6 border-t border-[#4a4a4a]/40 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <span className="font-sans text-xs text-[#cbcbcb]/60">
-                Ready to achieve similar outcomes for your venture?
-              </span>
-              <a
-                href={`${BRAND.whatsappUrl}?text=${encodeURIComponent(
-                  `Hi Anas, I saw the ${caseStudy.title} case study on AmbrosStudio and want to discuss a similar project for my business.`
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-tech text-xs uppercase tracking-wider font-semibold px-6 py-3 rounded-full bg-[#6d8196] text-[#FFFFE3] hover:bg-[#5b6f84] transition-all shadow-[0_0_20px_rgba(109,129,150,0.4)]"
-              >
-                <MessageCircle className="w-4 h-4" />
-                <span>Discuss A Project Like This</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-        </motion.div>
+          {title}
+        </h3>
       </div>
-    </AnimatePresence>
+
+      {/* Optional deliverables badge row (for modal view) */}
+      {deliverables && deliverables.length > 0 && isModal && (
+        <div className="absolute bottom-5 left-5 right-5 z-20 flex flex-wrap gap-2 justify-center pointer-events-none">
+          {deliverables.slice(0, 4).map((item, idx) => (
+            <span
+              key={idx}
+              className="px-3 py-1 rounded-full bg-[#0a0a0a]/85 backdrop-blur-md border border-[#6d8196]/40 text-[#FFFFE3] font-tech text-xs shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Top Tag badge if present */}
+      {tag && (
+        <div className="absolute top-4 left-4 z-20 pointer-events-none">
+          <span className="px-3 py-1 rounded-full bg-[#0a0a0a]/85 backdrop-blur-md border border-[#6d8196]/40 text-[#FFFFE3] font-tech text-xs uppercase tracking-wider shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+            {tag}
+          </span>
+        </div>
+      )}
+    </div>
   );
 });
