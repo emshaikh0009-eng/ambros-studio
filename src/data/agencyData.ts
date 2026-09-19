@@ -12,7 +12,8 @@ export const BRAND = {
   facebookUrl: 'https://www.facebook.com/share/p/1HrAAE5Yjf/',
   twitterHandle: '@AnasSha84485493',
   twitterUrl: 'https://twitter.com/AnasSha84485493',
-  location: 'Ahmedabad, Gujarat, India',
+  location: '214, VIP Galleria, Alpha Bazar, Althan, Surat, Gujarat – 395017',
+  address: '214, VIP Galleria, Alpha Bazar, Althan, Surat, Gujarat – 395017',
   email: 'contact@ambros.studio',
   // Verbatim mission statement from the brand brief:
   mission:
@@ -125,7 +126,9 @@ export const CASE_STUDIES: CaseStudy[] = [
     category: 'Flagship 3D Web & Design System',
     tag: 'Web Flagship',
     year: '2026',
-    image: '/src/assets/images/aura_villa_architecture_1789725130050.webp',
+    image: '/assets/images/case_aura_villa.jpg',
+    width: 3840,
+    height: 2160,
     altText: 'The Pinnacle of Luxury Architectural Masterpieces 3D interactive web showcase by AmbrosStudio',
     brief:
       'A premier ultra-luxury architectural developer required an Awwwards-caliber digital experience to showcase their multi-million dollar modernist villas, private estates, and interior collections to international buyers.',
@@ -158,7 +161,9 @@ export const CASE_STUDIES: CaseStudy[] = [
     category: 'Website + Brand Architecture',
     tag: 'Web Flagship',
     year: '2026',
-    image: '/src/assets/images/case_nova_interiors_1789724261494.webp',
+    image: '/assets/images/case_nova_interiors.jpg',
+    width: 4000,
+    height: 3000,
     altText: 'Nova Interiors luxury architectural web design layout showcased on minimal display',
     brief:
       'Nova Interiors, an ultra-luxury architectural firm, struggled with a sluggish legacy website that failed to mirror their multi-million dollar residential portfolio or capture affluent private developers.',
@@ -191,7 +196,9 @@ export const CASE_STUDIES: CaseStudy[] = [
     category: 'Meta Ads Funnel + Growth',
     tag: 'Digital Ads',
     year: '2026',
-    image: '/src/assets/images/case_brew_bloom_1789724294232.webp',
+    image: '/assets/images/case_brew_bloom.jpg',
+    width: 4032,
+    height: 2268,
     altText: 'Brew & Bloom Cafe targeted Instagram video ads and coffee roastery lifestyle',
     brief:
       'A rapidly growing artisanal roastery and botanical café needed to fill off-peak weekday tables and scale their high-margin specialty coffee bean subscription across metro cities.',
@@ -224,7 +231,9 @@ export const CASE_STUDIES: CaseStudy[] = [
     category: 'Digital Card Suite + Identity',
     tag: 'Digital Cards',
     year: '2026',
-    image: '/src/assets/images/case_digital_cards_1789724276918.webp',
+    image: '/assets/images/case_digital_cards.jpg',
+    width: 1920,
+    height: 1080,
     altText: 'Kite Legal sleek matte black NFC smart visiting card on marble slate',
     brief:
       'A prestigious 40-attorney corporate law firm needed an executive, modern networking solution to replace outdated paper visiting cards at international arbitration conferences.',
@@ -257,7 +266,9 @@ export const CASE_STUDIES: CaseStudy[] = [
     category: 'Full Digital Rebrand + Ads',
     tag: 'Full Transformation',
     year: '2026',
-    image: '/src/assets/images/case_nova_interiors_1789724261494.webp',
+    image: '/assets/images/case_atlas_fitness.jpg',
+    width: 3000,
+    height: 2000,
     altText: 'Atlas Fitness modern web experience and membership acquisition funnel',
     brief:
       'A premium strength and athletic conditioning gym chain was losing high-end personal training leads to low-cost generic fitness centers due to an outdated digital presence.',
@@ -427,3 +438,4 @@ export const FAQS = [
       'Our physical cards contain embedded NFC chips. When tapped against any modern iPhone or Android, your branded digital profile opens instantly without requiring any app download.',
   },
 ];
+
