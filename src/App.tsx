@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageCircle, ArrowUp } from 'lucide-react';
 import { PageId } from './types';
@@ -40,7 +40,6 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const [showBackToTop, setShowBackToTop] = useState(false);
   const [showMobileWhatsApp, setShowMobileWhatsApp] = useState(true);
   const lastScrollY = useRef(0);
 
