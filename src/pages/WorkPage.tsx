@@ -113,6 +113,11 @@ export default memo(function WorkPage({ onNavigate }: WorkPageProps) {
               <div className="relative h-72 sm:h-80 w-full overflow-hidden bg-[#181a1d]">
                 <CaseStudyVisual
                   title={study.title}
+                  image={study.image}
+                  altText={study.altText}
+                  imageAlt={study.altText}
+                  width={study.width}
+                  height={study.height}
                   eyebrow={`CASE STUDY 0${index + 1}`}
                   tag={study.tag}
                   category={study.category}
