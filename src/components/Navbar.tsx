@@ -147,21 +147,21 @@ export default memo(function Navbar({ currentPage, onNavigate }: NavbarProps) {
             </a>
           </div>
 
-          {/* Mobile Hamburger Toggle */}
-          <div className="md:hidden flex items-center gap-3">
+          {/* Mobile Hamburger Toggle & WhatsApp Icon (Min 44x44px touch targets) */}
+          <div className="md:hidden flex items-center gap-2">
             <a
               href={BRAND.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2.5 rounded-full bg-[#161a20] border border-[#363e49] text-[#FFFFE3] shadow-[0_0_12px_rgba(0,0,0,0.5)]"
+              className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-[#161a20] border border-[#363e49] text-[#FFFFE3] shadow-[0_0_12px_rgba(0,0,0,0.5)] flex items-center justify-center active:scale-95 transition-transform"
               aria-label="WhatsApp Contact"
             >
-              <MessageCircle className="w-4 h-4 text-[#25D366]" />
+              <MessageCircle className="w-5 h-5 text-[#25D366]" />
             </a>
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 rounded-xl bg-[#161a20] border border-[#363e49] text-[#FFFFE3] hover:text-white focus:outline-none"
+              className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-[#161a20] border border-[#363e49] text-[#FFFFE3] hover:text-white focus:outline-none flex items-center justify-center active:scale-95 transition-transform"
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
