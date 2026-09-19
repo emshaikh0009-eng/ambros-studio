@@ -80,6 +80,11 @@ export default memo(function WorkProjectSlider() {
             <div className="relative h-64 md:h-72 w-full overflow-hidden bg-[#181a1d]">
               <CaseStudyVisual
                 title={study.title}
+                image={study.image}
+                altText={study.altText}
+                imageAlt={study.altText}
+                width={study.width}
+                height={study.height}
                 eyebrow={`CASE STUDY 0${index + 1}`}
                 tag={study.tag}
                 category={study.category}
