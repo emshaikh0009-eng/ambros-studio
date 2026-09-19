@@ -5,7 +5,7 @@ import ThreeHeroCanvas from '../components/ThreeHeroCanvas';
 import WorkProjectSlider from '../components/WorkProjectSlider';
 import TestimonialsSlider from '../components/TestimonialsSlider';
 import MagneticButton from '../components/MagneticButton';
-import { BRAND, SERVICES } from '../data/agencyData';
+import { BRAND, SERVICES, PARTNERS } from '../data/agencyData';
 import { PageId } from '../types';
 
 interface HomePageProps {
@@ -16,6 +16,7 @@ interface HomePageProps {
 export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePageProps) {
   const [scrollY, setScrollY] = useState(0);
   const [founderImgError, setFounderImgError] = useState(false);
+  const [founderPhotoActive, setFounderPhotoActive] = useState(false);
 
   // Throttled scroll listener via requestAnimationFrame
   useEffect(() => {
@@ -163,19 +164,19 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
             We design, build, and grow digital experiences for businesses ready to scale.
           </motion.p>
 
-          {/* Two CTAs — Full width on mobile (<640px / 375px), auto width on desktop */}
+          {/* Two CTAs — Full width stacked on mobile, 52px tall each */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
             className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mt-8 sm:mt-10 w-full sm:w-auto max-w-sm sm:max-w-none"
           >
-            <div className="btn-mobile-full w-full sm:w-auto">
+            <div className="mobile-btn-52 btn-mobile-full w-full sm:w-auto h-[52px]">
               <MagneticButton
                 href={BRAND.whatsappUrl}
                 isExternal
                 variant="primary"
-                className="w-full sm:w-auto px-8 py-4 text-sm font-semibold"
+                className="w-full sm:w-auto px-8 py-4 text-sm font-semibold h-full"
                 id="hero-start-project-cta"
               >
                 <MessageCircle className="w-4 h-4 text-[#FFFFE3]" />
@@ -184,14 +185,14 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
               </MagneticButton>
             </div>
 
-            <div className="btn-mobile-full w-full sm:w-auto">
+            <div className="mobile-btn-52 btn-mobile-full w-full sm:w-auto h-[52px]">
               <MagneticButton
                 onClick={() => {
                   onNavigate('work');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 variant="secondary"
-                className="w-full sm:w-auto px-8 py-4 text-sm font-semibold"
+                className="w-full sm:w-auto px-8 py-4 text-sm font-semibold h-full"
                 id="hero-see-work-cta"
               >
                 <span>See Our Work</span>
@@ -209,6 +210,45 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
             <span className="w-1.5 h-1.5 rounded-full bg-[#6d8196]" />
             <span>Led by Anas Shaikh + 5 Specialized Creatives</span>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 3. TRUST / PARTNER STRIP (MOBILE ONLY < 768px: 1.5 items snap, 140x80px) */}
+      {/* ========================================================================= */}
+      <section
+        id="mobile-trust-partners-strip"
+        className="md:hidden py-6 px-5 overflow-hidden border-b border-[#4a4a4a]/25 bg-[#0e1013]/60"
+        aria-label="Strategic Partners"
+      >
+        <div className="flex items-center justify-between mb-3 px-1">
+          <span className="font-tech text-[11px] uppercase tracking-[0.1em] text-[#6d8196] font-semibold">
+            Strategic Partners
+          </span>
+          <span className="font-tech text-[10px] text-[#cbcbcb]/50">
+            Swipe →
+          </span>
+        </div>
+        <div
+          className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {PARTNERS.map((partner, idx) => (
+            <div
+              key={idx}
+              className="w-[140px] min-w-[140px] h-[80px] snap-center rounded-xl bg-[#14171c]/90 border border-[#4a4a4a]/40 flex flex-col items-center justify-center p-2.5 text-center shadow-md flex-shrink-0"
+            >
+              <span className="text-[9px] text-[#6d8196] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-[#6d8196]/15 border border-[#6d8196]/30 mb-1">
+                {partner.badge}
+              </span>
+              <span className="text-xs font-semibold text-[#FFFFE3] line-clamp-1">
+                {partner.name}
+              </span>
+              <span className="text-[10px] text-[#cbcbcb]/60 line-clamp-1">
+                {partner.category}
+              </span>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -236,8 +276,58 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
           </button>
         </div>
 
-        {/* Responsive grid: 1 col on mobile (375px), 2 cols on tablet (768px), 3 cols on desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {/* Mobile 1-Column Layout (<768px): 24px padding, Icon + Title same row, max 2 lines desc, Learn more bottom right */}
+        <div className="md:hidden flex flex-col space-y-4">
+          {SERVICES.map((service) => (
+            <div
+              key={`mobile-${service.id}`}
+              onClick={() => {
+                onNavigate('services');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="glass-card rounded-2xl p-6 border border-[#4a4a4a]/50 active:border-[#6d8196] flex flex-col justify-between cursor-pointer transition-all shadow-[0_15px_35px_rgba(0,0,0,0.5)]"
+            >
+              <div>
+                {/* Icon + title on same row */}
+                <div className="flex items-center gap-3.5 mb-3">
+                  <div className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-[#181a1d] border border-[#4a4a4a] flex items-center justify-center text-[#FFFFE3] flex-shrink-0">
+                    {getServiceIcon(service.id)}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-xl text-[#FFFFE3]">
+                      {service.title}
+                    </h3>
+                    <span className="text-[11px] text-[#6d8196] uppercase tracking-wider font-semibold">
+                      {service.tagline}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Description below (max 2 lines) */}
+                <p className="text-[15px] text-[#cbcbcb]/80 leading-relaxed line-clamp-2 mb-4 font-normal">
+                  {serviceSummaries[service.id] || service.description}
+                </p>
+              </div>
+
+              {/* Bottom row: Metric left, Learn more link at bottom right */}
+              <div className="pt-4 border-t border-[#4a4a4a]/40 flex items-center justify-between">
+                <span className="text-xs font-semibold text-[#FFFFE3]">
+                  {service.metrics[0].value}{' '}
+                  <span className="text-[#cbcbcb]/60 text-[11px] font-normal">
+                    {service.metrics[0].label}
+                  </span>
+                </span>
+                <span className="inline-flex items-center gap-1 text-xs uppercase tracking-wider font-semibold text-[#6d8196] active:text-[#FFFFE3] min-h-[44px] flex items-center">
+                  <span>Learn more</span>
+                  <ArrowUpRight className="w-4 h-4 text-[#00a2ff]" />
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Responsive grid: 2 cols on tablet (768px), 3 cols on desktop (unchanged) */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {SERVICES.map((service, index) => {
             const isLast = index === SERVICES.length - 1;
             return (
@@ -300,8 +390,41 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
         id="process-steps-section"
         className="section-content-visibility py-16 md:py-20 px-5 sm:px-8 md:px-12 max-w-7xl mx-auto relative z-10 overflow-hidden"
       >
-        {/* Responsive grid: 1 col on mobile (375px), 2 cols on tablet (768px), 3 cols on desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {/* Mobile Vertical Timeline (<768px): Numbered circles on left, connecting line, 1-line description */}
+        <div className="md:hidden relative pl-2 pr-2 py-2">
+          {/* Connecting vertical line between steps */}
+          <div className="absolute left-[23px] top-6 bottom-8 w-[2px] bg-gradient-to-b from-[#00a2ff] via-[#6d8196] to-[#4a4a4a]/40 pointer-events-none" />
+
+          <div className="flex flex-col space-y-6 relative z-10">
+            {processSteps.map((step) => {
+              const Icon = step.icon;
+              return (
+                <div key={`mobile-${step.step}`} className="flex items-start gap-4">
+                  {/* Numbered circle on left */}
+                  <div className="w-10 h-10 min-w-[40px] rounded-full bg-[#161a20] border-2 border-[#00a2ff] flex items-center justify-center text-[#FFFFE3] font-mono text-xs font-bold shadow-[0_0_12px_rgba(0,162,255,0.3)] flex-shrink-0 z-10">
+                    {step.step}
+                  </div>
+
+                  {/* Title + 1-line description */}
+                  <div className="flex-1 glass-card p-4 rounded-xl border border-[#4a4a4a]/50">
+                    <div className="flex items-center justify-between mb-1">
+                      <h3 className="font-bold text-lg text-[#FFFFE3] flex items-center gap-2">
+                        <span>{step.title}</span>
+                      </h3>
+                      <Icon className="w-4 h-4 text-[#6d8196]" />
+                    </div>
+                    <p className="text-[15px] text-[#cbcbcb]/80 leading-relaxed font-normal">
+                      {step.line}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Desktop Responsive grid: 2 cols on tablet (768px), 3 cols on desktop (unchanged) */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {processSteps.map((step, idx) => {
             const Icon = step.icon;
             const isLast = idx === processSteps.length - 1;
@@ -365,7 +488,52 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
         id="founder-block-section"
         className="section-content-visibility py-12 md:py-16 px-5 sm:px-8 md:px-12 max-w-4xl mx-auto relative z-10 overflow-hidden"
       >
-        <div className="glass-card rounded-2xl p-6 sm:p-8 border border-[#4a4a4a]/50 flex flex-col sm:flex-row items-center gap-6 sm:gap-8 shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
+        {/* Mobile Layout (<768px): Photo top max-width 280px centered rounded, tap for color, 4-line statement, centered name+role */}
+        <div className="md:hidden glass-card rounded-2xl p-6 border border-[#4a4a4a]/50 flex flex-col items-center text-center shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
+          {/* Photo on top (max-width 280px, centered, rounded, tap to activate color) */}
+          <div
+            onClick={() => setFounderPhotoActive(!founderPhotoActive)}
+            className="w-full max-w-[280px] aspect-square rounded-2xl overflow-hidden border-2 border-[#6d8196]/60 bg-[#181a1d] shadow-[0_0_25px_rgba(109,129,150,0.3)] cursor-pointer relative mb-5 active:scale-[0.98] transition-transform"
+            role="button"
+            aria-label="Tap to view founder photo in color"
+          >
+            {!founderImgError ? (
+              <img
+                src="/founder.jpg"
+                alt="Anas Shaikh — Founder & CEO"
+                width={280}
+                height={280}
+                onError={() => setFounderImgError(true)}
+                className={`w-full h-full object-cover object-top transition-all duration-500 ${
+                  founderPhotoActive ? 'grayscale-0' : 'grayscale'
+                }`}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center font-bold text-4xl text-[#FFFFE3] bg-gradient-to-br from-[#1f2b38] to-[#0a0a0a]">
+                AS
+              </div>
+            )}
+            <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md text-[10px] text-[#FFFFE3] border border-white/20">
+              {founderPhotoActive ? 'Color Active' : 'Tap for Color'}
+            </div>
+          </div>
+
+          {/* Statement below (max 4 lines) */}
+          <blockquote className="text-[15px] text-[#FFFFE3] font-medium leading-relaxed mb-4 line-clamp-4">
+            &ldquo;We build the digital foundation your business needs to scale — high-converting websites, profitable ad funnels, and smart digital identity.&rdquo;
+          </blockquote>
+
+          {/* Name + role centered */}
+          <div className="flex flex-col items-center gap-1 text-sm">
+            <span className="font-bold text-[#FFFFE3] text-base">Anas Shaikh</span>
+            <span className="text-[#6d8196] text-xs font-semibold uppercase tracking-wider">
+              Founder & CEO
+            </span>
+          </div>
+        </div>
+
+        {/* Desktop Layout (≥768px): Unchanged row layout */}
+        <div className="hidden md:flex glass-card rounded-2xl p-6 sm:p-8 border border-[#4a4a4a]/50 flex-row items-center gap-6 sm:gap-8 shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
           {/* Founder Photo */}
           <div className="relative flex-shrink-0">
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border border-[#6d8196]/50 bg-[#181a1d] shadow-[0_0_20px_rgba(109,129,150,0.25)] flex items-center justify-center">
@@ -388,11 +556,11 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
           </div>
 
           {/* Compact Quote & Signature */}
-          <div className="flex-1 text-center sm:text-left space-y-3">
+          <div className="flex-1 text-left space-y-3">
             <blockquote className="text-sm sm:text-base text-[#FFFFE3] font-medium leading-relaxed">
               &ldquo;We build the digital foundation your business needs to scale — high-converting websites, profitable ad funnels, and smart digital identity.&rdquo;
             </blockquote>
-            <div className="flex items-center justify-center sm:justify-start gap-2 text-xs">
+            <div className="flex items-center justify-start gap-2 text-xs">
               <span className="font-semibold text-[#FFFFE3]">Anas Shaikh</span>
               <span className="text-[#6d8196] font-medium">— Founder & CEO</span>
             </div>
@@ -422,12 +590,12 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
           </p>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 mt-8 sm:mt-10 w-full max-w-sm sm:max-w-none mx-auto">
-            <div className="btn-mobile-full w-full sm:w-auto">
+            <div className="mobile-btn-52 btn-mobile-full w-full sm:w-auto h-[52px]">
               <MagneticButton
                 href={BRAND.whatsappUrl}
                 isExternal
                 variant="primary"
-                className="w-full sm:w-auto px-8 py-4 text-sm font-semibold"
+                className="w-full sm:w-auto px-8 py-4 text-sm font-semibold h-full"
                 id="cta-whatsapp-primary"
               >
                 <MessageCircle className="w-4 h-4 text-[#FFFFE3]" />
@@ -436,14 +604,14 @@ export default memo(function HomePage({ onNavigate, canLoad3D = true }: HomePage
               </MagneticButton>
             </div>
 
-            <div className="btn-mobile-full w-full sm:w-auto">
+            <div className="mobile-btn-52 btn-mobile-full w-full sm:w-auto h-[52px]">
               <MagneticButton
                 onClick={() => {
                   onNavigate('contact');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 variant="secondary"
-                className="w-full sm:w-auto px-8 py-4 text-sm font-semibold"
+                className="w-full sm:w-auto px-8 py-4 text-sm font-semibold h-full"
               >
                 <span>Submit Project Brief</span>
               </MagneticButton>
