@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @layer base {
@@ -13,17 +14,17 @@
   body {
     background-color: #0a0a0a;
     color: #cbcbcb;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     overflow-x: hidden;
   }
 
-  h1, h2, h3, .font-serif-luxury {
-    font-family: 'Instrument Serif', Georgia, serif;
+  h1, h2, h3, h4, h5, h6, .font-serif-luxury, .font-tech {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     letter-spacing: -0.02em;
   }
 
-  .font-tech {
-    font-family: 'Space Grotesk', sans-serif;
+  .font-sans {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 }
 
@@ -149,5 +150,10 @@ body,
   }
 }
 
-
-
+/* FIX 1: Hide AMBROS background watermark on mobile (<768px) to prevent hero text overlap */
+@media (max-width: 767px) {
+  #hero-mobile-visual .select-none,
+  #hero-mobile-visual [role="img"] {
+    display: none !important;
+  }
+}
