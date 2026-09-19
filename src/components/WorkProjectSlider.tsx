@@ -8,6 +8,7 @@ import CaseStudyVisual from './CaseStudyVisual';
 
 export default memo(function WorkProjectSlider() {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<CaseStudy | null>(null);
+  const [activeMobileIndex, setActiveMobileIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -38,8 +39,8 @@ export default memo(function WorkProjectSlider() {
           </p>
         </div>
 
-        {/* Slider Controls */}
-        <div className="flex items-center gap-3">
+        {/* Slider Controls: Hidden on mobile (<768px), visible on desktop */}
+        <div className="hidden md:flex items-center gap-3">
           <button
             type="button"
             onClick={() => scroll('left')}
@@ -59,10 +60,16 @@ export default memo(function WorkProjectSlider() {
         </div>
       </div>
 
-      {/* Horizontal Scroll Snap Container */}
+      {/* Horizontal Scroll Snap Container (1 card per view on mobile, swipe-friendly) */}
       <div
         ref={scrollContainerRef}
-        className="flex gap-6 md:gap-8 overflow-x-auto px-6 md:px-12 pb-8 scrollbar-none snap-x snap-mandatory"
+        onScroll={() => {
+          if (!scrollContainerRef.current) return;
+          const { scrollLeft, offsetWidth } = scrollContainerRef.current;
+          const newIdx = Math.round(scrollLeft / (offsetWidth || 1));
+          setActiveMobileIndex(Math.min(Math.max(newIdx, 0), CASE_STUDIES.length - 1));
+        }}
+        className="flex gap-5 md:gap-8 overflow-x-auto px-5 md:px-12 pb-6 scrollbar-none snap-x snap-mandatory"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {CASE_STUDIES.map((study, index) => (
@@ -74,10 +81,10 @@ export default memo(function WorkProjectSlider() {
             transition={{ duration: 0.6, delay: index * 0.1 }}
             whileHover={{ y: -8, scale: 1.01 }}
             onClick={() => setSelectedCaseStudy(study)}
-            className="group flex-shrink-0 w-[320px] sm:w-[380px] md:w-[440px] snap-center cursor-pointer rounded-2xl glass-card border border-[#4a4a4a]/50 hover:border-[#6d8196] transition-all duration-500 overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.6)] flex flex-col justify-between"
+            className="group flex-shrink-0 w-[calc(100vw-40px)] min-w-[calc(100vw-40px)] sm:w-[380px] sm:min-w-0 md:w-[440px] snap-center cursor-pointer rounded-2xl glass-card border border-[#4a4a4a]/50 hover:border-[#6d8196] transition-all duration-500 overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.6)] flex flex-col justify-between"
           >
-            {/* Visual Header CSS Design with subtle dark gradient, slate-blue radial glow, and grid overlay */}
-            <div className="relative h-64 md:h-72 w-full overflow-hidden bg-[#181a1d]">
+            {/* Visual Header: 4/3 Aspect Ratio on Mobile */}
+            <div className="relative aspect-[4/3] md:aspect-auto md:h-72 w-full overflow-hidden bg-[#181a1d]">
               <CaseStudyVisual
                 title={study.title}
                 image={study.image}
@@ -128,6 +135,30 @@ export default memo(function WorkProjectSlider() {
               </div>
             </div>
           </motion.div>
+        ))}
+      </div>
+
+      {/* Mobile Dot Indicators */}
+      <div className="flex md:hidden items-center justify-center gap-2 mt-2">
+        {CASE_STUDIES.map((_, idx) => (
+          <button
+            key={idx}
+            type="button"
+            onClick={() => {
+              if (!scrollContainerRef.current) return;
+              const cardWidth = scrollContainerRef.current.offsetWidth;
+              scrollContainerRef.current.scrollTo({
+                left: idx * cardWidth,
+                behavior: 'smooth',
+              });
+            }}
+            aria-label={`Go to case study ${idx + 1}`}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              activeMobileIndex === idx
+                ? 'w-7 bg-[#00a2ff] shadow-[0_0_8px_rgba(0,162,255,0.5)]'
+                : 'w-2 bg-[#4a4a4a]'
+            }`}
+          />
         ))}
       </div>
 
