@@ -239,3 +239,32 @@ body,
   }
 }
 
+/* ========================================================================= */
+/* TAP-TO-ACTIVATE COLOR REVEAL & ACTIVE STATES (MOBILE & TOUCH) */
+/* ========================================================================= */
+
+.is-active img,
+.group.is-active img,
+.is-active img[src],
+.group.is-active img[src] {
+  filter: grayscale(0%) contrast(105%) !important;
+  -webkit-filter: grayscale(0%) contrast(105%) !important;
+}
+
+.is-active,
+.group.is-active,
+.glow-on-active.is-active {
+  box-shadow: 0 0 40px rgba(109, 129, 150, 0.5) !important;
+  border-color: rgba(109, 129, 150, 0.8) !important;
+}
+
+@media (hover: none) {
+  .is-active img,
+  .group.is-active img,
+  .group:active img {
+    filter: grayscale(0%) contrast(105%) !important;
+    -webkit-filter: grayscale(0%) contrast(105%) !important;
+  }
+}
+
+
