@@ -34,20 +34,29 @@ export default function DigitalCardPreview() {
   return (
     <div className="flex flex-col lg:flex-row items-center gap-10 p-8 md:p-12 rounded-2xl glass-card border border-[#4a4a4a]/60">
       {/* 3D Flippable Card Stage */}
-      <div className="w-full max-w-[380px] perspective-1000 flex flex-col items-center">
+      <div
+        className="w-full max-w-[380px] flex flex-col items-center"
+        style={{ perspective: '1200px' }}
+      >
         <div
-          className="relative w-[340px] h-[200px] cursor-pointer transition-transform duration-700 select-none group"
+          className="relative w-[340px] h-[200px] cursor-pointer select-none group"
           style={{ transformStyle: 'preserve-3d' }}
           onClick={() => setIsFlipped(!isFlipped)}
+          role="button"
+          aria-label="Tap to flip card"
         >
           {/* Front of Card */}
           <motion.div
             animate={{ rotateY: isFlipped ? 180 : 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className={`absolute inset-0 rounded-2xl p-6 bg-radial from-[#1e232a] via-[#101216] to-[#0a0a0a] border border-[#6d8196]/50 shadow-[0_15px_35px_rgba(0,0,0,0.8)] flex flex-col justify-between backface-hidden ${
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            className={`absolute inset-0 rounded-2xl p-6 bg-radial from-[#1e232a] via-[#101216] to-[#0a0a0a] border border-[#6d8196]/50 shadow-[0_15px_35px_rgba(0,0,0,0.8)] flex flex-col justify-between ${
               hasTappedNFC ? 'ring-2 ring-[#FFFFE3] shadow-[0_0_35px_rgba(255,255,227,0.5)]' : ''
             }`}
-            style={{ backfaceVisibility: 'hidden' }}
+            style={{
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
+              transformStyle: 'preserve-3d',
+            }}
           >
             {/* Top row: Brand & NFC symbol */}
             <div className="flex items-center justify-between">
@@ -80,7 +89,7 @@ export default function DigitalCardPreview() {
                 <p className="font-sans text-[11px] text-[#6d8196]">Founder & CEO</p>
               </div>
               <div className="font-tech text-[10px] text-[#cbcbcb]/40 tracking-widest uppercase">
-                TAP OR FLIP
+                TAP TO FLIP
               </div>
             </div>
           </motion.div>
@@ -88,9 +97,13 @@ export default function DigitalCardPreview() {
           {/* Back of Card */}
           <motion.div
             animate={{ rotateY: isFlipped ? 0 : -180 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-0 rounded-2xl p-6 bg-radial from-[#181a1d] to-[#0a0a0a] border border-[#6d8196]/40 shadow-[0_15px_35px_rgba(0,0,0,0.8)] flex items-center justify-between backface-hidden"
-            style={{ backfaceVisibility: 'hidden' }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0 rounded-2xl p-6 bg-radial from-[#181a1d] to-[#0a0a0a] border border-[#6d8196]/40 shadow-[0_15px_35px_rgba(0,0,0,0.8)] flex items-center justify-between"
+            style={{
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
+              transformStyle: 'preserve-3d',
+            }}
           >
             <div className="flex flex-col justify-between h-full">
               <div>
@@ -106,7 +119,7 @@ export default function DigitalCardPreview() {
               </div>
 
               <div className="font-tech text-[10px] text-[#cbcbcb]/50">
-                Click to flip back
+                Tap to flip back
               </div>
             </div>
 
