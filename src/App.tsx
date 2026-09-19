@@ -40,13 +40,28 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // Throttled back to top scroll listener via requestAnimationFrame
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  const [showMobileWhatsApp, setShowMobileWhatsApp] = useState(true);
+  const lastScrollY = useRef(0);
+
+  // Throttled scroll listener via requestAnimationFrame
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          setShowBackToTop(window.scrollY > 400);
+          const currentY = window.scrollY;
+          setShowBackToTop(currentY > 400);
+
+          // Mobile WhatsApp button: Hides when scrolling down, appears when scrolling up
+          if (currentY <= 60) {
+            setShowMobileWhatsApp(true);
+          } else if (currentY > lastScrollY.current + 8) {
+            setShowMobileWhatsApp(false);
+          } else if (currentY < lastScrollY.current - 8) {
+            setShowMobileWhatsApp(true);
+          }
+          lastScrollY.current = currentY;
           ticking = false;
         });
         ticking = true;
@@ -137,8 +152,8 @@ export default function App() {
       {/* Unified Main Footer */}
       <Footer onNavigate={navigateTo} />
 
-      {/* Floating Action Buttons: Back-to-Top & Direct WhatsApp */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-center gap-3">
+      {/* Desktop Floating Action Buttons: Back-to-Top & Direct WhatsApp (>=768px only) */}
+      <div className="hidden md:flex fixed bottom-6 right-6 z-40 flex-col items-center gap-3">
         <AnimatePresence>
           {showBackToTop && (
             <motion.button
@@ -155,7 +170,7 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        {/* Global WhatsApp CTA Button */}
+        {/* Global Desktop WhatsApp CTA Button */}
         <motion.a
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
@@ -166,8 +181,27 @@ export default function App() {
           aria-label="Contact on WhatsApp"
         >
           <MessageCircle className="w-4 h-4 fill-black" />
-          <span className="hidden sm:inline">WhatsApp</span>
+          <span>WhatsApp</span>
         </motion.a>
+      </div>
+
+      {/* Mobile Floating WhatsApp Button (<768px): Fixed bottom-right 56px circle, hides scrolling down, appears scrolling up */}
+      <div
+        className={`md:hidden fixed bottom-5 right-5 z-40 transition-all duration-300 ${
+          showMobileWhatsApp
+            ? 'translate-y-0 opacity-100'
+            : 'translate-y-24 opacity-0 pointer-events-none'
+        }`}
+      >
+        <a
+          href={BRAND.whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-14 h-14 min-w-[56px] min-h-[56px] rounded-full bg-[#25D366] text-black shadow-[0_4px_25px_rgba(37,211,102,0.5)] flex items-center justify-center active:scale-95 transition-transform"
+          aria-label="Contact on WhatsApp"
+        >
+          <MessageCircle className="w-7 h-7 fill-black text-[#25D366]" />
+        </a>
       </div>
     </div>
   );
