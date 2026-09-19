@@ -180,7 +180,7 @@ export default memo(function ContactPage({ onNavigate }: ContactPageProps) {
               </div>
             </div>
 
-            {/* Embedded Region Preview Card (Ahmedabad Tech Hub) */}
+            {/* Embedded Region Preview Card (Surat Studio Hub) */}
             <div className="p-6 rounded-2xl glass-card border border-[#4a4a4a]/40 relative overflow-hidden">
               <div className="flex items-center justify-between mb-3">
                 <span className="font-tech text-xs text-[#6d8196] uppercase tracking-widest">
@@ -191,7 +191,7 @@ export default memo(function ContactPage({ onNavigate }: ContactPageProps) {
                 </span>
               </div>
               <p className="font-sans text-xs text-[#cbcbcb] leading-relaxed">
-                Operating globally from Ahmedabad, Gujarat with active clients spanning India, Dubai, Singapore, and the United Kingdom.
+                Operating globally from 214, VIP Galleria, Alpha Bazar, Althan, Surat, Gujarat – 395017 with active clients spanning India, Dubai, Singapore, and the United Kingdom.
               </p>
             </div>
           </div>
